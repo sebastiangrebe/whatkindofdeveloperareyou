@@ -1,0 +1,65 @@
+{
+  "name": "bottr",
+  "version": "0.1.6",
+  "description": "The world's simplest bot framework",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
+    "queue": "^4.0.0",
+    "request": "^2.74.0",
+    "socket.io": "^1.4.8",
+    "twilio": "^2.9.2",
+    "twit": "^2.2.4",
+    "uuid": "^3.0.0"
+  },
+  "scripts": {
+    "lint": "eslint __mocks__ __tests__ lib index.js",
+    "test": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bottr-js/Bottr.git"
+  },
+  "keywords": [
+    "bot",
+    "framework",
+    "facebook",
+    "messenger",
+    "sms",
+    "twitter"
+  ],
+  "author": {
+    "name": "jcampbell05"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bottr-js/Bottr/issues"
+  },
+  "homepage": "https://github.com/Bottr-js/Bottr#readme",
+  "devDependencies": {
+    "babel-eslint": "^7.0.0",
+    "babel-jest": "^16.0.0",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.16.0",
+    "eslint": "^3.8.1",
+    "eslint-config-airbnb-base": "^9.0.0",
+    "eslint-plugin-import": "^2.0.1",
+    "coveralls": "^2.11.14",
+    "jest": "14.1.0",
+    "mock-fs": "^3.11.0",
+    "nock": "^8.0.0"
+  },
+  "jest": {
+    "unmockedModulePathPatterns": [
+      "/node_modules/request"
+    ]
+  },
+  "readme": "<p align=\"center\">\n<img alt=\"Bottr\" src=\"https://bottr-js.github.io/Bottr/Images/Logo.png\" height=\"200\" />\n</p>\n\n[![Travis](https://img.shields.io/travis/Bottr-js/Bottr.svg?maxAge=2592000)](https://travis-ci.org/Bottr-js/Bottr)\n\nA framework for creating Bots.\n\nHead to our [Documentation](https://github.com/Bottr-js/Bottr/wiki) to read more about how to install and start using Bottr.\n\n| Botkit        |\n| ------------- |\n| :rocket: Prebuilt integrations with Facebook Messenger, SMS and more. |\n| :boom: Focus on building the business logic for your bot, not infrastructure. |\n| :bulb: Build your bot in minutes not hours. |\n\n## Creating A New Project\n\nFollow the instructions [here](https://github.com/Bottr-js/Bottr/wiki/Creating-a-new-project)\n\n## Need Help?\n\nGet in contact with the developer on Twitter: [@jcampbell_05](https://twitter.com/jcampbell_05)\n\n## License\n\nThis project is licensed under the terms of the MIT license. See the LICENSE file.\n",
+  "readmeFilename": "README.md",
+  "gitHead": "cf919778840e4ca32f6f53a951bcd6f8a9c01fb3",
+  "_id": "bottr@0.1.6",
+  "_shasum": "0b3fc3ccbe1311f04665c2569d336ba11b74d0cd",
+  "_from": "bottr@>=0.1.0 <0.2.0"
+}

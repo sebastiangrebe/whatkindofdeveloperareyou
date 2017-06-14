@@ -1,0 +1,70 @@
+{
+  "_from": "bottr-app@^0.2.0",
+  "_id": "bottr-app@0.2.5",
+  "_inBundle": false,
+  "_integrity": "sha1-vxuMgNx1Upkcr1/zjBcuvuYhXlk=",
+  "_location": "/bottr-app",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "bottr-app@^0.2.0",
+    "name": "bottr-app",
+    "escapedName": "bottr-app",
+    "rawSpec": "^0.2.0",
+    "saveSpec": null,
+    "fetchSpec": "^0.2.0"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/bottr-app/-/bottr-app-0.2.5.tgz",
+  "_shasum": "bf1b8c80dc7552991caf5ff38c172ebee6215e59",
+  "_spec": "bottr-app@^0.2.0",
+  "_where": "C:\\Users\\sebig\\Documents\\whatkindofdeveloperareyou",
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/Pozi-js/Pozi-App/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-plugin-transform-react-jsx": "^6.8.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-react": "^6.11.1",
+    "babel-preset-stage-0": "^6.5.0",
+    "express": "^4.14.0",
+    "fastclick": "^1.0.6",
+    "gulp": "^3.9.1",
+    "react": "^15.3.1",
+    "react-addons-css-transition-group": "^15.3.1",
+    "react-dom": "^15.3.1",
+    "react-dropzone": "^2.2.4",
+    "socket.io-client": "^1.4.8",
+    "webpack": "^1.13.2",
+    "webpack-stream": "^3.2.0",
+    "uuid": "3.0.1"
+  },
+  "deprecated": false,
+  "description": "",
+  "devDependencies": {
+    "electron-prebuilt": "^1.2.0",
+    "phonegap": "^6.3.0"
+  },
+  "homepage": "https://github.com/Pozi-js/Pozi-App#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "name": "bottr-app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pozi-js/Pozi-App.git"
+  },
+  "scripts": {
+    "android": "cd mobile && phonegap run android",
+    "desktop": "electron desktop",
+    "ios": "cd mobile && phonegap run ios",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.2.5"
+}

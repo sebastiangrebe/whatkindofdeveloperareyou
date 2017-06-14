@@ -1,0 +1,53 @@
+var Session = require('./session')
+
+function WebsocketClient(io) {
+  return function(bot) {
+    this.bot = bot
+    io.on('connection', this.createConnectionHandler())
+    return this
+  }.bind(this)
+}
+
+WebsocketClient.prototype.createConnectionHandler = function() {
+  return function(socket) {
+    console.log('new websocket connection')
+    socket.on('message', this.createMessageHandler(socket))
+  }.bind(this)
+}
+
+WebsocketClient.prototype.createMessageHandler = function(socket) {
+  return function(data) {
+
+    var session = new Session(data.user, this)
+    session.socket = socket
+
+    this.bot.trigger('message_received', data, session)
+
+    return session
+
+  }.bind(this)
+}
+
+WebsocketClient.prototype.send = function(session, text, attachment) {
+
+  var message = {};
+
+  if (text) {
+    message.text = text
+  }
+
+  if (attachment) {
+    message.attachment = {
+      type: attachment.type,
+      url: attachment.url
+    }
+  }
+
+  session.socket.emit('message', message)
+}
+
+WebsocketClient.prototype.startTyping = function(session) {
+  session.socket.emit('typing', {})
+}
+
+module.exports = WebsocketClient
