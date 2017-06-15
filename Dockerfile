@@ -1,21 +1,17 @@
-FROM    ubuntu:16.04
+FROM nginx:1.13.0-alpine
 
-# Install Node.js and other dependencies
-RUN apt-get update && \
-    apt-get -y install curl && \
-    curl -sL https://deb.nodesource.com/setup | bash - && \
-    apt-get -y install python build-essential nodejs npm
+# install console and node
+RUN apk add --no-cache bash=4.3.46-r5 &&\
+    apk add --no-cache openssl=1.0.2k-r0 &&\
+    apk add --no-cache nodejs
 
 # Install nodemon
 RUN npm install -g nodemon
 
-# Provides cached layer for node_modules
-ADD package.json /tmp/package.json
-RUN cd /tmp && npm install
-
 # Define working directory
 WORKDIR /
 COPY . /
+RUN npm install
 
 # Expose port
 EXPOSE  3000
