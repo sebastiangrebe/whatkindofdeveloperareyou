@@ -10,7 +10,7 @@
     "express": "^4.14.0",
     "queue": "^4.0.0",
     "request": "^2.74.0",
-    "socket.io": "^1.4.8",
+    "socket.io": "^2.0.3",
     "uuid": "^3.0.0",
     "phantom": "4.0.4"
   },
