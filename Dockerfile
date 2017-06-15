@@ -1,4 +1,4 @@
-FROM ngineered/nginx-nodejs
+FROM nginx-nodejs
 
 COPY . /var/www/html
 
