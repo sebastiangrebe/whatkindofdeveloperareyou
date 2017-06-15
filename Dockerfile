@@ -4,7 +4,7 @@ FROM    ubuntu:16.04
 RUN apt-get update && \
     apt-get -y install curl && \
     curl -sL https://deb.nodesource.com/setup | bash - && \
-    apt-get -y install python build-essential nodejs
+    apt-get -y install python build-essential nodejs npm
 
 # Install nodemon
 RUN npm install -g nodemon
