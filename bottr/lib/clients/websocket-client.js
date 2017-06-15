@@ -9,11 +9,11 @@ class WebsocketClient extends BaseClient {
     io.on('connection', this.createConnectionHandler());
   }
 
-  static createEventHandler() {
+  createEventHandler() {
     return (req, res, next) => {
       // If this isn't a websocket request then carry on with other handlers
       if (!{}.hasOwnProperty.call(req.query, 'websocket')) {
-        return next();
+        next();
       }
 
       // console.log(req.body)
@@ -28,7 +28,7 @@ class WebsocketClient extends BaseClient {
     };
   }
 
-  static createConnectionHandler() {
+  createConnectionHandler() {
     return (socket) => {
       const socketID = Object.keys(this.sockets).length;
 
@@ -38,7 +38,7 @@ class WebsocketClient extends BaseClient {
     };
   }
 
-  static createMessageHandler(socket) {
+  createMessageHandler(socket) {
     return (data) => {
       const session = new Session(this.bot, data.user, this);
       session.socket = socket;
@@ -49,7 +49,7 @@ class WebsocketClient extends BaseClient {
     };
   }
 
-  static send(session, text, attachment) {
+  send(session, text, attachment) {
     const message = {};
 
     if (text) {
@@ -66,7 +66,7 @@ class WebsocketClient extends BaseClient {
     session.socket.emit('message', message);
   }
 
-  static startTyping(session) {
+  startTyping(session) {
     session.socket.emit('typing', {});
   }
 }
