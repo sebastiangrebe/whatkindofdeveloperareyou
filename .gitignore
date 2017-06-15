@@ -1,6 +1,9 @@
 
 whatkindofdeveloperareyou\.db
 node_modules
+coverage
 screenshot\.jpeg
 
 ui/web/res/main\.js
+
+\.nyc_output/

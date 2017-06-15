@@ -1,5 +1,4 @@
 function MemoryStorage() {
-
   this.memory = {
     users: {
 
@@ -10,11 +9,11 @@ function MemoryStorage() {
     accounts: {
 
     }
-  }
+  };
 
-  return function(bot) {
+  return function init (bot) {
 
-    bot.on('message_received', function(message, session, next) {
+    bot.on('message_received', (message, session, next) => {
 
       session.getUserContext = function(defaults) {
         var context = this.memory.users[session.user] || {}
@@ -48,7 +47,7 @@ function MemoryStorage() {
 
       next()
 
-    }.bind(this))
+    })
 
     return this
 
