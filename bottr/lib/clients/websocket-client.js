@@ -9,15 +9,12 @@ class WebsocketClient extends BaseClient {
     io.on('connection', this.createConnectionHandler());
   }
 
-  createEventHandler() {
+  static createEventHandler() {
     return (req, res, next) => {
       // If this isn't a websocket request then carry on with other handlers
       if (!{}.hasOwnProperty.call(req.query, 'websocket')) {
-        next();
-        return;
+        return next();
       }
-
-      // TODO: Implement for Websockets
 
       // console.log(req.body)
 
@@ -31,18 +28,17 @@ class WebsocketClient extends BaseClient {
     };
   }
 
-  createConnectionHandler() {
+  static createConnectionHandler() {
     return (socket) => {
       const socketID = Object.keys(this.sockets).length;
 
-      console.log(`new websocket connection ${socketID}`);
       socket.on('message', this.createMessageHandler(socket));
 
       this.sockets[socketID] = socket;
     };
   }
 
-  createMessageHandler(socket) {
+  static createMessageHandler(socket) {
     return (data) => {
       const session = new Session(this.bot, data.user, this);
       session.socket = socket;
@@ -53,7 +49,7 @@ class WebsocketClient extends BaseClient {
     };
   }
 
-  send(session, text, attachment) {
+  static send(session, text, attachment) {
     const message = {};
 
     if (text) {
@@ -70,7 +66,7 @@ class WebsocketClient extends BaseClient {
     session.socket.emit('message', message);
   }
 
-  startTyping(session) {
+  static startTyping(session) {
     session.socket.emit('typing', {});
   }
 }
