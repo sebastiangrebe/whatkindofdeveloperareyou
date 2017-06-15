@@ -38,10 +38,6 @@ class ImageCreator {
                         content.innerHTML = resultHTML;
                     }, resultHTML);
                     return render.then(() => {
-                        p.render("screenshot.jpeg", {
-                            format: 'jpeg',
-                            quality: '100'
-                        });
                         var myBase64Result = p.renderBase64('PNG');
                         return myBase64Result;
                     });

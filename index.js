@@ -267,3 +267,22 @@ function updateUserContext(session, data) {
     });
     session.updateUserContext(data);
 }
+
+module.exports = {
+    db,
+    bot,
+    fragebogenprogrammierung,
+    skalen,
+    welcomeMessage,
+    continueMessage,
+    finishMessage,
+    sendRecognition,
+    startFB,
+    continueFB,
+    finishFB,
+    sendRatingFrage,
+    sendMultiFrage,
+    receiveMultiFrage,
+    createUserContext,
+    updateUserContext
+}
