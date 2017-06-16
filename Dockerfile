@@ -27,11 +27,10 @@ COPY . /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
 
 RUN npm install
+RUN npm rebuild
 
 # Expose port
 EXPOSE  3000
 
-RUN ls /usr/share/nginx/html/node_modules/phantomjs-prebuilt/lib/phantom/bin/
-
 # Run app using nodemon
-CMD ["nodemon", "/index.js"]
+CMD ["nodemon", "/usr/share/nginx/html/index.js"]
