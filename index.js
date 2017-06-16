@@ -42,33 +42,7 @@ bot.on('message_received', function (message, session, next) {
                     }
                 }
                 console.log(context);
-                switch (context.status) {
-                    case 'offen':
-                        session.send(welcomeMessage);
-                        break;
-                    case 'teilbefragt':
-                        session.send(continueMessage);
-                        break;
-                    case 'abgeschlossen':
-                        session.send(finishMessage);
-                        if (typeof context.resultImage === typeof undefined) {
-                            imgcreator.createPersonalResult(context.results, fragebogenprogrammierung).then((img) => {
-                                img = 'data:image/png;base64,' + img;
-                                context.resultImage = img;
-                                updateUserContext(session, context);
-                                session.send('Das kannst du dir gerne an die Wand hängen!', {
-                                    type: 'image.*',
-                                    url: img
-                                });
-                            });
-                        } else {
-                            session.send('Das kannst du dir gerne an die Wand hängen!', {
-                                type: 'image.*',
-                                url: context.resultImage
-                            });
-                        }
-                        break;
-                }
+                decideNextAction(session,context);
             }
         })
     } else {
@@ -80,6 +54,36 @@ bot.on('message_received', function (message, session, next) {
         }
     }
 });
+
+function decideNextAction(session,context){
+    switch (context.status) {
+        case 'offen':
+            session.send(welcomeMessage);
+            break;
+        case 'teilbefragt':
+            session.send(continueMessage);
+            break;
+        case 'abgeschlossen':
+            session.send(finishMessage);
+            if (typeof context.resultImage === typeof undefined) {
+                imgcreator.createPersonalResult(context.results, fragebogenprogrammierung).then((img) => {
+                    img = 'data:image/png;base64,' + img;
+                    context.resultImage = img;
+                    updateUserContext(session, context);
+                    session.send('Das kannst du dir gerne an die Wand hängen!', {
+                        type: 'image.*',
+                        url: img
+                    });
+                });
+            } else {
+                session.send('Das kannst du dir gerne an die Wand hängen!', {
+                    type: 'image.*',
+                    url: context.resultImage
+                });
+            }
+            break;
+    }
+}
 
 bot.hears([/start/i, /on/i, /kann losgehen/i, /\bja\b/i, /ja!/i, /jo/i, /yo/i, /yeah/i], function (message, session) {
     let context = session.getUserContext();
@@ -215,30 +219,12 @@ function receiveMultiFrage(message, session, next) {
                 var countone = 0;
                 var counttwo = 0;
                 var text = message.text.split(',');
-                for (var prop in frage.action.one) {
-                    for (var item in text) {
-                        if (Object.prototype.hasOwnProperty.call(text, item)) {
-                            if (checkIfWertEquals(text[item], frage.action.one[prop])) {
-                                wert.one[frage.action.one[prop]] = 1;
-                                countone++;
-                            } else {
-                                wert.one[frage.action.one[prop]] = 0;
-                            }
-                        }
-                    }
-                }
-                for (var prop in frage.action.two) {
-                    for (var item in text) {
-                        if (Object.prototype.hasOwnProperty.call(text, item)) {
-                            if (checkIfWertEquals(text[item], frage.action.two[prop])) {
-                                wert.two[frage.action.two[prop]] = 1;
-                                counttwo++;
-                            } else {
-                                wert.two[frage.action.two[prop]] = 0;
-                            }
-                        }
-                    }
-                }
+                var first = calcMultiTwo(frage,'one',text);
+                frage = first.frage;
+                countone = first.count;
+                var first = calcMultiTwo(frage,'two',text);
+                frage = first.frage;
+                counttwo = first.count;
                 wert.ergebnis = countone - counttwo;
                 if (countone === 0 && counttwo === 0) {
                     session.send('Keine deiner Antworten haben gepasst versuch es noch einmal!');
@@ -258,6 +244,27 @@ function receiveMultiFrage(message, session, next) {
             continueFB(session);
         }
     }
+}
+
+function calcMultiTwo(frage,index,text){
+    var array = frage.action[index];
+    var count=0;
+    for (var prop in frage.action[index]) {
+        for (var item in text) {
+            if (Object.prototype.hasOwnProperty.call(text, item)) {
+                if (checkIfWertEquals(text[item], frage.action[index][prop])) {
+                    wert.two[frage.action[index][prop]] = 1;
+                    count++;
+                } else {
+                    wert.two[frage.action[index][prop]] = 0;
+                }
+            }
+        }
+    }
+    return {
+        frage,
+        count
+    };
 }
 
 function checkIfWertEquals(wert, comp) {

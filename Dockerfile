@@ -19,11 +19,11 @@ RUN ln -sf /usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/loca
 
 # Install nodemon
 RUN npm install -g nodemon
-RUN npm install -g phantomjs
 
 # Define working directory
 WORKDIR /
 COPY . /
+RUN npm install phantomjs
 RUN npm install
 
 # Expose port
