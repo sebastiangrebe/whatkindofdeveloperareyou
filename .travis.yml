@@ -22,3 +22,7 @@ script:
   - 'npm run build'
 after_success:
   - 'npm run report-coverage'
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push sebi55/whatkindofdeveloperareyou;
+    fi
