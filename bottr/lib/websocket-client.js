@@ -16,7 +16,7 @@ WebsocketClient.prototype.createConnectionHandler = function () {
 
 WebsocketClient.prototype.createMessageHandler = function (socket) {
   return (data) => {
-    var session = new Session(data.user, this);
+    let session = new Session(data.user, this);
     session.socket = socket;
 
     this.bot.trigger('message_received', data, session);

@@ -53,11 +53,11 @@ class Bot {
 
     this.eventEmitter.fallback('event', function (req, res) {
       res.error('No event handlers configured');
-    }.bind(this));
+    });
 
     this.eventEmitter.fallback('webhook', function (req, res) {
       res.error('No webhook handlers configured');
-    }.bind(this));
+    });
 
     this.router.use(('/' + staticFilesDirectory), Express.static('public'));
     this.router.use(cors());
