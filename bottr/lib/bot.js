@@ -43,7 +43,7 @@ class Bot {
     this.router.use(`/${staticFilesDirectory}`, Express.static('public'));
     this.router.use(cors());
     this.router.use(BodyParser.urlencoded({
-      extended: true
+      extended: true,
     }));
     this.router.use(BodyParser.json());
     this.router.use(new ResponseMiddleware());
@@ -52,18 +52,18 @@ class Bot {
     this.router.post('/webhook', this.handleWebhookRequest.bind(this));
 
     this.eventEmitter.fallback('event', function (req, res) {
-      res.error('No event handlers configured')
+      res.error('No event handlers configured');
     }.bind(this));
 
     this.eventEmitter.fallback('webhook', function (req, res) {
-      res.error('No webhook handlers configured')
+      res.error('No webhook handlers configured');
     }.bind(this));
 
-    this.router.use('/' + staticFilesDirectory, Express.static('public'))
+    this.router.use(('/' + staticFilesDirectory), Express.static('public'));
     this.router.use(cors());
     this.router.use(BodyParser.json());
     this.router.use(BodyParser.urlencoded({
-      extended: true
+      extended: true,
     }));
     this.router.use(new ResponseMiddleware());
 
@@ -81,7 +81,6 @@ class Bot {
   }
 
   trigger(eventName, ...args) {
-    console.log(`${eventName} event triggered`);
     this.eventEmitter.emit(eventName, ...args);
   }
 

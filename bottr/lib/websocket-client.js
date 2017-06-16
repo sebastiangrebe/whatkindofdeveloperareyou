@@ -1,35 +1,32 @@
-var Session = require('./session');
+const Session = require('./session');
 
 function WebsocketClient(io) {
-  return function (bot) {
+  return (bot) => {
     this.bot = bot;
     io.on('connection', this.createConnectionHandler());
     return this;
-  }.bind(this);
+  };
 }
 
 WebsocketClient.prototype.createConnectionHandler = function () {
-  return function (socket) {
-    console.log('new websocket connection');
+  return (socket) => {
     socket.on('message', this.createMessageHandler(socket));
-  }.bind(this);
+  };
 };
 
 WebsocketClient.prototype.createMessageHandler = function (socket) {
-  return function (data) {
-
+  return (data) => {
     var session = new Session(data.user, this);
     session.socket = socket;
 
     this.bot.trigger('message_received', data, session);
 
     return session;
-
-  }.bind(this);
+  };
 };
 
 WebsocketClient.prototype.send = function (session, text, attachment) {
-  var message = {};
+  let message = {};
 
   if (text) {
     message.text = text;
@@ -38,7 +35,7 @@ WebsocketClient.prototype.send = function (session, text, attachment) {
   if (attachment) {
     message.attachment = {
       type: attachment.type,
-      url: attachment.url
+      url: attachment.url,
     };
   }
 
