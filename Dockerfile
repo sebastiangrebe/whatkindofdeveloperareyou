@@ -1,18 +1,19 @@
-FROM nginx:1.13.0-alpine
+FROM nginx
 
 # install console and node
-RUN apk update && apk add --no-cache fontconfig &&\
-    apk add --no-cache curl &&\
-    apk add --no-cache bash=4.3.46-r5 &&\
-    apk add --no-cache openssl=1.0.2k-r0 &&\
-    apk add --no-cache nodejs &&\
-    apk add --no-cache build-base &&\
-    apk add --no-cache chrpath &&\
-    apk add --no-cache openssl-dev &&\
-    apk add --no-cache libxft-dev &&\
-    apk add --no-cache freetype &&\
-    apk add --no-cache freetype-dev &&\
-    apk add --no-cache fontconfig-dev
+RUN apt-get update && apt-get install curl && curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh &&\
+    bash nodesource_setup.sh &&\
+    apt-get install nodejs &&\
+    apt-get install build-essential chrpath libssl-dev libxft-dev &&\
+    apt-get install libfreetype6 libfreetype6-dev &&\
+    apt-get install libfontconfig1 libfontconfig1-dev
+
+RUN cd ~ &&\
+    export PHANTOM_JS="phantomjs-2.1.1-linux-x86_64" &&\
+    wget https://github.com/Medium/phantomjs/releases/download/v2.1.1/$PHANTOM_JS.tar.bz2 &&\
+    sudo tar xvjf $PHANTOM_JS.tar.bz2 &&\
+    sudo mv $PHANTOM_JS /usr/local/share &&\
+    sudo ln -sf /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin
 
 # Install nodemon
 RUN npm install -g nodemon
