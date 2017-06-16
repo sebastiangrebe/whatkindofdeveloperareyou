@@ -23,13 +23,15 @@ RUN mkdir -p /usr/share && \
 # Install nodemon
 RUN npm install -g nodemon
 
-# Define working directory
-WORKDIR /
-COPY . /
+COPY . /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html
+
 RUN npm install
 
 # Expose port
 EXPOSE  3000
+
+RUN ls /usr/share/nginx/html/node_modules/phantomjs-prebuilt/lib/phantom/bin/
 
 # Run app using nodemon
 CMD ["nodemon", "/index.js"]
