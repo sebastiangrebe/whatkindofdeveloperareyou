@@ -17,7 +17,6 @@ class Topic {
   }
 
   trigger(eventName, ...args) {
-    console.log(`${eventName} event triggered for topic`);
     this.eventEmitter.emit(eventName, ...args);
   }
 

@@ -1,5 +1,5 @@
 const Bot = require('./bot');
-const WebsocketClient = require('./clients/websocket-client');
+const WebsocketClient = require('./websocket-client');
 
 class Server {
   constructor() {
@@ -34,8 +34,6 @@ Bot.prototype.connectToSocket = function (io) {
   const bot = this;
 
   io.on('connection', (socket) => {
-    console.log('new websocket connection');
-
     socket.on('message', (data) => {
       const session = {
         user: data.user,

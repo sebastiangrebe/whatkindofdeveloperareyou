@@ -25,23 +25,20 @@ const finishMessage = 'Danke für deine Teilnahme! Du hast die Befragung abgesch
 
 bot.on('message_received', function (message, session, next) {
     if (message.action === 'init') {
-        console.log(message);
         db.findOne({
             _id: message.id
         }, function (err, doc) {
             if (!err) {
                 let context = session.getUserContext();
-                console.log(doc);
                 if (doc) {
                     session.updateUserContext(doc);
                     context = doc;
                 } else {
-                    if (Object.keys(context).length === 0) {
+                    if (Object.keys(context).length === 0 || context._id !== message.id) {
                         createUserContext(session, message);
                         context = session.getUserContext();
                     }
                 }
-                console.log(context);
                 decideNextAction(session,context);
             }
         })
@@ -50,7 +47,7 @@ bot.on('message_received', function (message, session, next) {
         if (context.exclusive) {
             context.exclusive(message, session, next);
         } else {
-            return next();
+            return next(message,session);
         }
     }
 });
@@ -156,7 +153,22 @@ function continueFB(session) {
 function finishFB(session) {
     let context = session.getUserContext();
     context.status = 'abgeschlossen';
-    imgcreator.createPersonalResult({});
+    if (typeof context.resultImage === typeof undefined) {
+        imgcreator.createPersonalResult(context.results, fragebogenprogrammierung).then((img) => {
+            img = 'data:image/png;base64,' + img;
+            context.resultImage = img;
+            updateUserContext(session, context);
+            session.send('Das kannst du dir gerne an die Wand hängen!', {
+                type: 'image.*',
+                url: img
+            });
+        });
+    } else {
+        session.send('Das kannst du dir gerne an die Wand hängen!', {
+            type: 'image.*',
+            url: context.resultImage
+        });
+    }
     updateUserContext(session, context);
     session.send(finishMessage);
 }
@@ -222,9 +234,11 @@ function receiveMultiFrage(message, session, next) {
                 var first = calcMultiTwo(frage,'one',text);
                 frage = first.frage;
                 countone = first.count;
+                wert.one = first.wert;
                 var first = calcMultiTwo(frage,'two',text);
                 frage = first.frage;
                 counttwo = first.count;
+                wert.two = first.wert;
                 wert.ergebnis = countone - counttwo;
                 if (countone === 0 && counttwo === 0) {
                     session.send('Keine deiner Antworten haben gepasst versuch es noch einmal!');
@@ -249,21 +263,23 @@ function receiveMultiFrage(message, session, next) {
 function calcMultiTwo(frage,index,text){
     var array = frage.action[index];
     var count=0;
+    var wert={}
     for (var prop in frage.action[index]) {
         for (var item in text) {
             if (Object.prototype.hasOwnProperty.call(text, item)) {
                 if (checkIfWertEquals(text[item], frage.action[index][prop])) {
-                    wert.two[frage.action[index][prop]] = 1;
+                    wert[frage.action[index][prop]] = 1;
                     count++;
                 } else {
-                    wert.two[frage.action[index][prop]] = 0;
+                    wert[frage.action[index][prop]] = 0;
                 }
             }
         }
     }
     return {
         frage,
-        count
+        count,
+        wert
     };
 }
 

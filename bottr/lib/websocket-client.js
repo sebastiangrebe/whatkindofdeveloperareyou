@@ -10,18 +10,20 @@ function WebsocketClient(io) {
 
 WebsocketClient.prototype.createConnectionHandler = function () {
   return (socket) => {
-    socket.on('message', this.createMessageHandler(socket));
+    var session;
+    socket.on('message', (data) => { var backup = this.createMessageHandler(socket)(data,session);if(typeof session === typeof undefined){session=backup}return session; });
   };
 };
 
-WebsocketClient.prototype.createMessageHandler = function (socket) {
-  return (data) => {
-    let session = new Session(data.user, this);
-    session.socket = socket;
-
+WebsocketClient.prototype.createMessageHandler = function (socket,session) {
+  return (data,session) => {
+    if(typeof data.id !== typeof undefined){
+      var session = new Session(this.bot,data.id, this);
+      session.socket = socket;
+    }
     this.bot.trigger('message_received', data, session);
-
     return session;
+    
   };
 };
 

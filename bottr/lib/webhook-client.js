@@ -43,7 +43,7 @@ WebhookClient.prototype.send = function (session, text) {
     },
     body: JSON.stringify({
       text: text
-    });
+    })
   }, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       console.log("Successfully sent message.");

@@ -41,14 +41,12 @@ class Session {
   }
 
   startTopic(topicID) {
-    console.log(`Started Topic ${topicID}`);
     this.updateUserContext({
       currentTopic: topicID,
     });
   }
 
   finishTopic() {
-    console.log('Finished Topic');
     this.updateUserContext({
       currentTopic: undefined,
     });
@@ -60,8 +58,12 @@ class Session {
   }
 
   updateUserContext(newValues) {
-    const context = this.bot.memory.users[this.user] || {};
-    this.bot.memory.users[this.user] = Object.assign(context, newValues);
+    if(typeof this.bot.memory.users[this.user] === typeof undefined){
+      this.bot.memory.users[this.user]=newValues;
+    }else{
+      const context = this.bot.memory.users[this.user] || {};
+      this.bot.memory.users[this.user] = Object.assign(context, newValues);
+    }
   }
 }
 module.exports = Session;
