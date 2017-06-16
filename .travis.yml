@@ -15,7 +15,7 @@ node_js:
   - "7"
   - "6"
 before_install:
-  - docker build .
+  - docker build -t $DOCKER_USERNAME/sinatra .
 script:
   - 'npm run cover'
   - 'npm run check-coverage'
