@@ -6,7 +6,6 @@ const path = require('path');
 const ImageCreator = require('./createResult');
 var appRoot = path.resolve(__dirname);
 var io = require('socket.io-client');
-var connection;
 var client1;
 
 var socketURL = 'http://127.0.0.1:3000';
@@ -18,7 +17,7 @@ var options = {
 
 
 describe('bot', function () {
-
+    this.timeout(10000);
     it('should work!', function () {
         expect(true).to.be.true;
     });
@@ -31,18 +30,18 @@ describe('bot', function () {
             done();
         });
     });
-    
+
     it('should be able to receive connections', function () {
         client1 = io.connect(socketURL, options);
-        connection = client1.on('connect', function (data) {
+        client1.on('connect', function (data) {
 
         });
     });
 
     it('should give me a welcome message', function (done) {
-        this.timeout(10000);
-        client1.on('message',function(message) {
+        client1.on('message', function (message) {
             message.text.should.equal(bot.welcomeMessage);
+            client1.disconnect();
             done();
         });
         client1.emit('message', {
@@ -50,4 +49,58 @@ describe('bot', function () {
             action: "init"
         });
     });
+
+    it('should have a user database entry now', function (done) {
+        bot.db.findOne({
+            _id: "Test"
+        }, function (err, doc) {
+            assert.isNull(err);
+            doc._id.should.equal("Test");
+            doc.status.should.equal("offen");
+            doc.step.should.equal(-1);
+            done();
+        });
+    });
+
+    it('should be able to answer the first question', function (done) {
+        var messages = 0;
+        client1 = io.connect(socketURL, options);
+        client1.on('connect', function (data) {
+            client1.on('message', function (message) {
+                if (messages === 1) {
+                    client1.disconnect();
+                    done();
+                }
+                if (messages === 0) {
+                    message.text.should.equal(bot.welcomeMessage);
+                    messages++;
+                    client1.emit('message', {
+                        text: "ja"
+                    });
+                }
+            });
+            client1.emit('message', {
+                id: "Test",
+                action: "init"
+            });
+        });
+        
+    });
+
+    it('should be able to restore the session by id', function (done) {
+        client1 = io.connect(socketURL, options);
+        client1.on('connect', function (data) {
+            client1.on('message', function (message) {
+                message.text.should.equal(bot.continueMessage);
+                client1.disconnect();
+                done();
+            });
+            client1.emit('message', {
+                id: "Test",
+                action: "init"
+            });
+        });
+    })
+
+
 });
