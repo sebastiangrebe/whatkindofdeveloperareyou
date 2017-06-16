@@ -1,7 +1,7 @@
 FROM nginx
 
 # install console and node
-RUN apt-get update && apt-get install curl gnupg -y && curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh &&\
+RUN apt-get update && apt-get install curl gnupg wget -y && curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh &&\
     bash nodesource_setup.sh &&\
     apt-get install nodejs -y &&\
     apt-get install build-essential chrpath libssl-dev libxft-dev -y &&\
