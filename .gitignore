@@ -7,3 +7,5 @@ screenshot\.jpeg
 ui/web/res/main\.js
 
 \.nyc_output/
+
+package-lock\.json
