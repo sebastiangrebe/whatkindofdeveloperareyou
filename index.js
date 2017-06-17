@@ -235,10 +235,10 @@ function receiveMultiFrage(message, session, next) {
                 frage = first.frage;
                 countone = first.count;
                 wert.one = first.wert;
-                var first = calcMultiTwo(frage,'two',text);
-                frage = first.frage;
-                counttwo = first.count;
-                wert.two = first.wert;
+                var second = calcMultiTwo(frage,'two',text);
+                frage = second.frage;
+                counttwo = second.count;
+                wert.two = second.wert;
                 wert.ergebnis = countone - counttwo;
                 if (countone === 0 && counttwo === 0) {
                     session.send('Keine deiner Antworten haben gepasst versuch es noch einmal!');
