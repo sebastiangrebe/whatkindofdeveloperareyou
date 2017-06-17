@@ -7,6 +7,8 @@ const ImageCreator = require('./createResult');
 var appRoot = path.resolve(__dirname);
 var io = require('socket.io-client');
 var client1;
+var uuid = require('uuid/v1');
+var id = uuid();
 
 var socketURL = 'http://127.0.0.1:3000';
 
@@ -45,17 +47,17 @@ describe('bot', function () {
             done();
         });
         client1.emit('message', {
-            id: "Test",
+            id: id,
             action: "init"
         });
     });
 
     it('should have a user database entry now', function (done) {
         bot.db.findOne({
-            _id: "Test"
+            _id: id
         }, function (err, doc) {
             assert.isNull(err);
-            doc._id.should.equal("Test");
+            doc._id.should.equal(id);
             doc.status.should.equal("offen");
             doc.step.should.equal(-1);
             done();
@@ -80,7 +82,7 @@ describe('bot', function () {
                 }
             });
             client1.emit('message', {
-                id: "Test",
+                id: id,
                 action: "init"
             });
         });
@@ -96,11 +98,10 @@ describe('bot', function () {
                 done();
             });
             client1.emit('message', {
-                id: "Test",
+                id: id,
                 action: "init"
             });
         });
-    })
-
+    });
 
 });
