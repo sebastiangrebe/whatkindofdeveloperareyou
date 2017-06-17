@@ -33,10 +33,10 @@ describe('bot', function () {
         });
     });
 
-    it('should be able to receive connections', function () {
+    it('should be able to receive connections', function (done) {
         client1 = io.connect(socketURL, options);
         client1.on('connect', function (data) {
-
+            done();
         });
     });
 
@@ -64,7 +64,7 @@ describe('bot', function () {
         });
     });
 
-    it('should be able to answer the first question', function (done) {
+    it('should be able to start the survey', function (done) {
         var messages = 0;
         client1 = io.connect(socketURL, options);
         client1.on('connect', function (data) {
@@ -89,12 +89,42 @@ describe('bot', function () {
         
     });
 
-    it('should be able to restore the session by id', function (done) {
+    it('should be able to answer the first question', function (done) {
+        var messages = 0;
+        client1 = io.connect(socketURL, options);
+        client1.on('connect', function (data) {
+            client1.on('message', function (message) {
+                if(messages === 2){
+                    client1.disconnect();
+                    done();
+                }
+                if (messages === 1) {
+                    messages++;
+                    client1.emit('message', {
+                        text: "1"
+                    });
+                }
+                
+                if (messages === 0) {
+                    message.text.should.equal(bot.welcomeMessage);
+                    messages++;
+                    client1.emit('message', {
+                        text: "ja"
+                    });
+                }
+            });
+            client1.emit('message', {
+                id: id,
+                action: "init"
+            });
+        });
+    });
+
+    it('should be able to continue the survey based on an id', function (done) {
         client1 = io.connect(socketURL, options);
         client1.on('connect', function (data) {
             client1.on('message', function (message) {
                 message.text.should.equal(bot.continueMessage);
-                client1.disconnect();
                 done();
             });
             client1.emit('message', {

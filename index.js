@@ -39,7 +39,7 @@ bot.on('message_received', function (message, session, next) {
                         context = session.getUserContext();
                     }
                 }
-                decideNextAction(session,context);
+                decideNextAction(session, context);
             }
         })
     } else {
@@ -47,12 +47,12 @@ bot.on('message_received', function (message, session, next) {
         if (context.exclusive) {
             context.exclusive(message, session, next);
         } else {
-            return next(message,session);
+            return next(message, session);
         }
     }
 });
 
-function decideNextAction(session,context){
+function decideNextAction(session, context) {
     switch (context.status) {
         case 'offen':
             session.send(welcomeMessage);
@@ -63,15 +63,7 @@ function decideNextAction(session,context){
         case 'abgeschlossen':
             session.send(finishMessage);
             if (typeof context.resultImage === typeof undefined) {
-                imgcreator.createPersonalResult(context.results, fragebogenprogrammierung).then((img) => {
-                    img = 'data:image/png;base64,' + img;
-                    context.resultImage = img;
-                    updateUserContext(session, context);
-                    session.send('Das kannst du dir gerne an die Wand hängen!', {
-                        type: 'image.*',
-                        url: img
-                    });
-                });
+                createPersonalResult(session, context);
             } else {
                 session.send('Das kannst du dir gerne an die Wand hängen!', {
                     type: 'image.*',
@@ -80,6 +72,18 @@ function decideNextAction(session,context){
             }
             break;
     }
+}
+
+function createPersonalResult(session, context) {
+    imgcreator.createPersonalResult(context.results, fragebogenprogrammierung).then((img) => {
+        img = 'data:image/png;base64,' + img;
+        context.resultImage = img;
+        updateUserContext(session, context);
+        session.send('Das kannst du dir gerne an die Wand hängen!', {
+            type: 'image.*',
+            url: img
+        });
+    });
 }
 
 bot.hears([/start/i, /on/i, /kann losgehen/i, /\bja\b/i, /ja!/i, /jo/i, /yo/i, /yeah/i], function (message, session) {
@@ -154,15 +158,7 @@ function finishFB(session) {
     let context = session.getUserContext();
     context.status = 'abgeschlossen';
     if (typeof context.resultImage === typeof undefined) {
-        imgcreator.createPersonalResult(context.results, fragebogenprogrammierung).then((img) => {
-            img = 'data:image/png;base64,' + img;
-            context.resultImage = img;
-            updateUserContext(session, context);
-            session.send('Das kannst du dir gerne an die Wand hängen!', {
-                type: 'image.*',
-                url: img
-            });
-        });
+        createPersonalResult(session, context);
     } else {
         session.send('Das kannst du dir gerne an die Wand hängen!', {
             type: 'image.*',
@@ -231,11 +227,11 @@ function receiveMultiFrage(message, session, next) {
                 var countone = 0;
                 var counttwo = 0;
                 var text = message.text.split(',');
-                var first = calcMultiTwo(frage,'one',text);
+                var first = calcMultiTwo(frage, 'one', text);
                 frage = first.frage;
                 countone = first.count;
                 wert.one = first.wert;
-                var second = calcMultiTwo(frage,'two',text);
+                var second = calcMultiTwo(frage, 'two', text);
                 frage = second.frage;
                 counttwo = second.count;
                 wert.two = second.wert;
@@ -260,10 +256,10 @@ function receiveMultiFrage(message, session, next) {
     }
 }
 
-function calcMultiTwo(frage,index,text){
+function calcMultiTwo(frage, index, text) {
     var array = frage.action[index];
-    var count=0;
-    var wert={}
+    var count = 0;
+    var wert = {}
     for (var prop in frage.action[index]) {
         for (var item in text) {
             if (Object.prototype.hasOwnProperty.call(text, item)) {
