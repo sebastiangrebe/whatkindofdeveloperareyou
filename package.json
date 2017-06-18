@@ -1,7 +1,7 @@
 {
   "name": "whatkindofdeveloperareyou",
   "version": "1.0.0",
-  "description": "",
+  "description": "whatkindofdeveloperareyou is a survey chat bot based on Bottr",
   "main": "index.js",
   "dependencies": {
     "nedb": "1.8.0",
@@ -39,7 +39,7 @@
     "socket.io-client": "2.0.3"
   },
   "scripts": {
-    "start": "bottr-cli start",
+    "start": "node index.js",
     "test": "mocha index.test.js",
     "build": "gulp --gulpfile ./ui/gulpfile.js",
     "check-coverage": "nyc check-coverage --statements 0 --branches 0 --functions 0 --lines 0",

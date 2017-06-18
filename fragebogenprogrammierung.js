@@ -10,9 +10,6 @@ const skalen = {
         min: 'trifft voll und ganz zu',
         headline: 'Inwieweit trifft die folgende Aussage zu?',
         einleitung: 'Bewerte von '
-    },
-    wichtigkeiten: {
-
     }
 };
 
@@ -33,7 +30,7 @@ const topics = [{
 }, {
     text: "Cross-Platform Support",
     wert: 1
-}]; // TODO
+}];
 
 const fragebogenprogrammierung = [{
         id: "F1",
@@ -105,4 +102,4 @@ const fragebogenprogrammierung = [{
 module.exports = {
     fragebogenprogrammierung,
     skalen
-}
+};
