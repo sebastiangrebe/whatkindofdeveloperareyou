@@ -64,6 +64,31 @@ describe('bot', function () {
         });
     });
 
+    it('should be able to give me an error message before starting the survey',function(done){
+        var messages = 0;
+        client1 = io.connect(socketURL, options);
+        client1.on('connect', function (data) {
+            client1.on('message', function (message) {
+                if (messages === 1) {
+                    message.text.should.equal("Deine Nachricht macht an dieser Stelle noch keinen Sinn!");
+                    client1.disconnect();
+                    done();
+                }
+                if (messages === 0) {
+                    message.text.should.equal(bot.welcomeMessage);
+                    client1.emit('message', {
+                        text: "1"
+                    });
+                }
+                messages++;
+            });
+            client1.emit('message', {
+                id: id,
+                action: "init"
+            });
+        });
+    });
+
     it('should be able to start the survey', function (done) {
         var messages = 0;
         client1 = io.connect(socketURL, options);
@@ -135,7 +160,7 @@ describe('bot', function () {
         });
     });
 
-    it('should be able to give me an error message', function (done) {
+    it('should be able to give me an error message during the survey', function (done) {
         var messages = 0;
         client1 = io.connect(socketURL, options);
         client1.on('connect', function (data) {
