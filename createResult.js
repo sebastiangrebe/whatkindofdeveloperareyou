@@ -27,10 +27,6 @@ class ImageCreator {
             var path = getFileUrl('result.html');
             return p.open(getFileUrl('result.html')).then((status) => {
                 if (status === "success") {
-                    p.property('onConsoleMessage', function (msg) {
-                        console.log(msg);
-                    });
-
                     var personalResult = calculatePersonalResult(result,fb);
                     var resultHTML = personalResultToHTML(personalResult, img);
                     var render = evaluate(p,function (resultHTML) {

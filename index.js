@@ -63,28 +63,28 @@ function decideNextAction(session, context) {
             break;
         case 'abgeschlossen':
             session.send(finishMessage);
-            if (typeof context.resultImage === typeof undefined) {
-                createPersonalResult(session, context);
-            } else {
-                session.send('Das kannst du dir gerne an die Wand hängen!', {
-                    type: 'image.*',
-                    url: context.resultImage
-                });
-            }
+            createPersonalResult(session, context);
             break;
     }
 }
 
 function createPersonalResult(session, context) {
-    imgcreator.createPersonalResult(context.results, fragebogenprogrammierung).then((img) => {
-        img = 'data:image/png;base64,' + img;
-        context.resultImage = img;
-        updateUserContext(session, context);
+    if (typeof context.resultImage === typeof undefined) {
+        imgcreator.createPersonalResult(context.results, fragebogenprogrammierung).then((img) => {
+            img = 'data:image/png;base64,' + img;
+            context.resultImage = img;
+            updateUserContext(session, context);
+            session.send('Das kannst du dir gerne an die Wand hängen!', {
+                type: 'image.*',
+                url: img
+            });
+        });
+    } else {
         session.send('Das kannst du dir gerne an die Wand hängen!', {
             type: 'image.*',
-            url: img
+            url: context.resultImage
         });
-    });
+    }
 }
 
 bot.hears([/start/i, /on/i, /kann losgehen/i, /\bja\b/i, /ja!/i, /jo/i, /yo/i, /yeah/i], function (message, session) {
@@ -158,14 +158,7 @@ function continueFB(session) {
 function finishFB(session) {
     let context = session.getUserContext();
     context.status = 'abgeschlossen';
-    if (typeof context.resultImage === typeof undefined) {
-        createPersonalResult(session, context);
-    } else {
-        session.send('Das kannst du dir gerne an die Wand hängen!', {
-            type: 'image.*',
-            url: context.resultImage
-        });
-    }
+    createPersonalResult(session, context);
     updateUserContext(session, context);
     session.send(finishMessage);
 }
@@ -192,8 +185,6 @@ function sendMultiFrage(session, frage) {
             }
             break;
         case 'two':
-            break;
-        default:
             break;
     }
     questionString += '\n' + frage.skala.text + '\nDeine nächste Nachricht wird als Antwort auf diese Frage gewertet!';
