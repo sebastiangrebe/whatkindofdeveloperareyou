@@ -41,7 +41,7 @@ const fragebogenprogrammierung = [{
         skala: {
             min: 1,
             max: 6,
-            type: 'zustimmung'
+            type: 'trifft'
         },
         frage: 'Ich bin sehr organisiert bei meiner Arbeit.'
     },
@@ -51,7 +51,7 @@ const fragebogenprogrammierung = [{
         skala: {
             min: 1,
             max: 6,
-            type: 'zustimmung'
+            type: 'trifft'
         },
         frage: 'Ich verstehe komplexe logische Aufgaben sehr gut und schnell.'
     },
@@ -61,9 +61,9 @@ const fragebogenprogrammierung = [{
         skala: {
             min: 1,
             max: 6,
-            type: 'zustimmung'
+            type: 'trifft'
         },
-        frage: 'Ich bin sehr kreativ und denke immer an den Endnutzer bei meiner Arbeit.'
+        frage: 'Ich verlasse mich gerne auf bereits erprobte Techniken und achte extrem auf die Stabitlität meiner Anwendung.'
     },
     {
         id: "F4",
@@ -73,7 +73,7 @@ const fragebogenprogrammierung = [{
             max: 6,
             type: 'zustimmung'
         },
-        frage: 'Ich bin in meiner Arbeit sehr organisiert.'
+        frage: 'Ich find regelmäße Code Reviews sehr wichtig.'
     },
     {
         id: "F5",
