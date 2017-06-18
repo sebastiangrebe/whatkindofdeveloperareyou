@@ -31,6 +31,7 @@ bot.on('message_received', function (message, session, next) {
             if (!err) {
                 let context = session.getUserContext();
                 if (doc) {
+                    doc.exclusive = false;
                     session.updateUserContext(doc);
                     context = doc;
                 } else {
@@ -47,7 +48,7 @@ bot.on('message_received', function (message, session, next) {
         if (context.exclusive) {
             context.exclusive(message, session, next);
         } else {
-            return next(message, session);
+            return next();
         }
     }
 });

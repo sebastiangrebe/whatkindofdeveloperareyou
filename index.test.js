@@ -64,7 +64,7 @@ describe('bot', function () {
         });
     });
 
-    it('should be able to give me an error message before starting the survey',function(done){
+    it('should be able to give me an error message before starting the survey', function (done) {
         var messages = 0;
         client1 = io.connect(socketURL, options);
         client1.on('connect', function (data) {
@@ -188,4 +188,73 @@ describe('bot', function () {
             });
         });
     });
+    var step = 0;
+    for (var i = 1; i < bot.fragebogenprogrammierung.length; i++) {
+        it('should be able to answer the survey question ' + i, function (done) {
+            client1 = io.connect(socketURL, options);
+            client1.on('connect', function (data) {
+                var messages = 0;
+                client1.on('message', function (message) {
+                    if (messages === 4) {
+                        if (step === bot.fragebogenprogrammierung.length - 1) {
+                            message.text.should.equal(bot.finishMessage);
+                        } else {
+                            message.text.should.equal('Nächste Frage...');
+                        }
+                        client1.disconnect();
+                        done();
+                    }
+                    if (messages === 3) {
+                        step++;
+                        var frage;
+                        for (var j = 0; j < bot.fragebogenprogrammierung.length; j++) {
+                            if (message.text.indexOf(bot.fragebogenprogrammierung[j].frage) !== -1) {
+                                frage = bot.fragebogenprogrammierung[j];
+                                break;
+                            }
+                        }
+                        switch (frage.type) {
+                            case 'rating':
+                                client1.emit('message', {
+                                    text: "1"
+                                });
+                                break;
+                            case 'multi':
+                                switch (frage.action.type) {
+                                    case 'one':
+                                        client1.emit('message', {
+                                            text: '1'
+                                        });
+                                        break;
+                                    case 'two':
+                                        client1.emit('message', {
+                                            text: frage.action.one[0]
+                                        });
+                                        break;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    if (messages === 2) {
+                        message.text.should.equal('Nächste Frage...');
+                    }
+                    if (messages === 1) {
+                        message.text.should.equal('Es geht weiter!');
+                    }
+                    if (messages === 0) {
+                        client1.emit('message', {
+                            text: "ja"
+                        });
+                    }
+                    messages++;
+                });
+                client1.emit('message', {
+                    id: id,
+                    action: "init"
+                });
+            });
+        });
+    }
 });

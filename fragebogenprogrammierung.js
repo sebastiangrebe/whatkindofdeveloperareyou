@@ -85,7 +85,7 @@ const fragebogenprogrammierung = [{
             type: 'one',
             one: topics
         },
-        frage: 'Welches der folgender Sachen ist dir am wichtigsten bei deiner Arbeit?'
+        frage: 'Welches der folgenden Sachen ist dir am wichtigsten bei deiner Arbeit?'
     },
     {
         id: "F6",
