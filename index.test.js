@@ -257,4 +257,19 @@ describe('bot', function () {
             });
         });
     }
+
+    it('should be able to recognize that the survey is finished', function (done) {
+        client1 = io.connect(socketURL, options);
+        client1.on('connect', function (data) {
+            var messages = 0;
+            client1.on('message', function (message) {
+                message.text.should.equal(bot.finishMessage);
+                done();
+            });
+            client1.emit('message', {
+                id: id,
+                action: "init"
+            });
+        });
+    });
 });
