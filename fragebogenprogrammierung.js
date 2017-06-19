@@ -32,6 +32,16 @@ const topics = [{
     wert: 1
 }];
 
+const profileActions = [{
+        command: "change profile",
+        parameter: "pic"
+    },
+    {
+        command: "change profile",
+        parameter: "name"
+    }
+];
+
 const fragebogenprogrammierung = [{
         id: "F1",
         type: 'rating',
@@ -99,7 +109,15 @@ const fragebogenprogrammierung = [{
     }
 ];
 
+const welcomeMessage = 'Willkommen zum kurzen 10-Fragen-Test, welche Art von Entwickler du in Wirklichkeit bist! Kann es losgehen?';
+const continueMessage = 'Willkommen zurück! Möchtest du die Befragung fortsetzen?';
+const finishMessage = 'Danke für deine Teilnahme! Du hast die Befragung abgeschlossen und kannst jetzt die Ergebnisse deiner Kollegen hier einsehen!';
+
 module.exports = {
     fragebogenprogrammierung,
-    skalen
+    skalen,
+    profileActions,
+    welcomeMessage,
+    continueMessage,
+    finishMessage
 };

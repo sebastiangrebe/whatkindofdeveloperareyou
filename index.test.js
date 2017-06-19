@@ -43,7 +43,7 @@ describe('bot', function () {
 
     it('should give me a welcome message', function (done) {
         client1.on('message', function (message) {
-            message.text.should.equal(bot.welcomeMessage);
+            message.text.should.equal(bot.surveybot.welcomeMessage);
             client1.disconnect();
             done();
         });
@@ -76,7 +76,7 @@ describe('bot', function () {
                     done();
                 }
                 if (messages === 0) {
-                    message.text.should.equal(bot.welcomeMessage);
+                    message.text.should.equal(bot.surveybot.welcomeMessage);
                     client1.emit('message', {
                         text: "1"
                     });
@@ -101,7 +101,7 @@ describe('bot', function () {
                     done();
                 }
                 if (messages === 0) {
-                    message.text.should.equal(bot.welcomeMessage);
+                    message.text.should.equal(bot.surveybot.welcomeMessage);
                     client1.emit('message', {
                         text: "ja"
                     });
@@ -132,7 +132,7 @@ describe('bot', function () {
                     });
                 }
                 if (messages === 0) {
-                    message.text.should.equal(bot.welcomeMessage);
+                    message.text.should.equal(bot.surveybot.welcomeMessage);
                     client1.emit('message', {
                         text: "ja"
                     });
@@ -150,7 +150,7 @@ describe('bot', function () {
         client1 = io.connect(socketURL, options);
         client1.on('connect', function (data) {
             client1.on('message', function (message) {
-                message.text.should.equal(bot.continueMessage);
+                message.text.should.equal(bot.surveybot.continueMessage);
                 client1.disconnect();
                 done();
             });
@@ -190,15 +190,15 @@ describe('bot', function () {
         });
     });
     var step = 0;
-    for (var i = 1; i < bot.fragebogenprogrammierung.length; i++) {
+    for (var i = 1; i < bot.surveybot.fragebogenprogrammierung.length; i++) {
         it('should be able to answer the survey question ' + i, function (done) {
             client1 = io.connect(socketURL, options);
             client1.on('connect', function (data) {
                 var messages = 0;
                 client1.on('message', function (message) {
                     if (messages === 4) {
-                        if (step === bot.fragebogenprogrammierung.length - 1) {
-                            message.text.should.equal(bot.finishMessage);
+                        if (step === bot.surveybot.fragebogenprogrammierung.length - 1) {
+                            message.text.should.equal(bot.surveybot.finishMessage);
                         } else {
                             message.text.should.equal('Nächste Frage...');
                         }
@@ -208,9 +208,9 @@ describe('bot', function () {
                     if (messages === 3) {
                         step++;
                         var frage;
-                        for (var j = 0; j < bot.fragebogenprogrammierung.length; j++) {
-                            if (message.text.indexOf(bot.fragebogenprogrammierung[j].frage) !== -1) {
-                                frage = bot.fragebogenprogrammierung[j];
+                        for (var j = 0; j < bot.surveybot.fragebogenprogrammierung.length; j++) {
+                            if (message.text.indexOf(bot.surveybot.fragebogenprogrammierung[j].frage) !== -1) {
+                                frage = bot.surveybot.fragebogenprogrammierung[j];
                                 break;
                             }
                         }
@@ -263,7 +263,7 @@ describe('bot', function () {
         client1 = io.connect(socketURL, options);
         client1.on('connect', function (data) {
             client1.on('message', function (message) {
-                message.text.should.equal(bot.finishMessage);
+                message.text.should.equal(bot.surveybot.finishMessage);
                 client1.disconnect();
                 done();
             });
@@ -290,7 +290,7 @@ describe('bot', function () {
                     done();
                 }
                 if(messages === 0){
-                    message.text.should.equal(bot.finishMessage);
+                    message.text.should.equal(bot.surveybot.finishMessage);
                 }
                 messages++;
             });

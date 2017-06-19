@@ -47,7 +47,7 @@ class Chat extends React.Component {
 
   render() {
     return (
-      <Dropzone className="chat" onDrop={this.onUpload.bind(this)}>
+      <Dropzone className="chat" onDrop={this.onUpload.bind(this)} disableClick={true}>
         <div className="header">
           <h1>What kind of developer are you?</h1>
         </div>

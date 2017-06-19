@@ -40,8 +40,7 @@ class Composer extends React.Component {
   }
 
   onSubmit(e) {
-
-    var text = this.refs.text.value
+    var text = this.refs.text.value;
 
     if (text.length > 0) {
       e.preventDefault()
@@ -51,7 +50,7 @@ class Composer extends React.Component {
   }
 
   selectFile() {
-    this.refs.file.click()
+    this.refs.file.click();
   }
 
   onSelectedFile() {
