@@ -26,7 +26,7 @@ RUN npm install
 RUN npm rebuild
 
 # Expose port
-EXPOSE  3000
+EXPOSE  80
 
 # Run app using nodemon
 CMD ["nodemon", "/usr/share/nginx/html/index.js"]
