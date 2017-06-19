@@ -20,10 +20,12 @@ class SurveyBot {
         this.sendFurtherCommands = this.sendFurtherCommands.bind(this);
         this.receiveProfileName = this.receiveProfileName.bind(this);
         this.receiveProfilePic = this.receiveProfilePic.bind(this);
+        this.createNavigationReceiver = this.createNavigationReceiver.bind(this);
         this.createMessageReceiver();
         this.createYesReceiver();
         this.createNumberReceiver();
         this.createProfileCommandReceiver();
+        this.createNavigationReceiver();
     }
 
     createMessageReceiver() {
@@ -121,6 +123,53 @@ class SurveyBot {
         });
     }
 
+    createNavigationReceiver() {
+        var self = this;
+        this.bot.hears([/weiter/i], function (message, session) {
+            let context = session.getUserContext();
+            let status = self.checkStatus(context,session);
+            if (status) {
+                if (context.step < self.fragebogenprogrammierung.length - 1 &&
+                    typeof context.results[self.fragebogenprogrammierung[context.step].id] !== typeof undefined &&
+                    typeof context.results[self.fragebogenprogrammierung[context.step].id].wert !== typeof undefined) {
+                    context.step++;
+                    self.updateUserContext(session, context);
+                    self.continueFB(session);
+                } else {
+                    session.send('Du musst zuerst die aktuelle Frage beantworten.')
+                }
+            }
+        });
+
+        this.bot.hears([/zurück/i], function (message, session) {
+            let context = session.getUserContext();
+            let status = self.checkStatus(context,session);
+            if (status) {
+                if (context.step > 0) {
+                    context.step--;
+                    self.updateUserContext(session, context);
+                    self.continueFB(session);
+                } else {
+                    session.send('Du hast noch keine Frage beantwortet');
+                }
+            }
+        });
+    }
+
+    checkStatus(context,session) {
+        if (context.status !== 'offen' && context.status !== 'abgeschlossen') {
+            return true;
+        } else {
+            if (context.status === 'abgeschlossen') {
+                session.send('Du hast die Befragung bereits abgeschlossen und kannst dein Ergebnis nicht mehr bearbeiten.')
+            } else {
+                session.send('Du musst zuerst eine Frage beantworten.');
+            }
+        }
+        return false;
+    }
+
+
     receiveProfilePic(message, session, next) {
         if (typeof message.text !== typeof undefined) {
             session.send('Dein Bild muss als Datei und nicht als Text geschickt werden! Versuch es noch einmal.');
@@ -207,9 +256,7 @@ class SurveyBot {
     }
 
     startFB(session) {
-        session.send('Dann auf die Plätze...');
-        session.send('...fertig...');
-        session.send('...los!!!');
+        session.send('Du kannst mit den Worten Zurück und Weiter im Fragebogen navigieren.');
         if (typeof this.fragebogenprogrammierung[0].frage !== typeof undefined &&
             typeof this.fragebogenprogrammierung[0].skala !== typeof undefined &&
             typeof this.fragebogenprogrammierung[0].id !== typeof undefined &&

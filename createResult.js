@@ -97,12 +97,7 @@ class ImageCreator {
     }
 
     personalResultToHTML(calculatedResult, img, profile) {
-        var headline;
-        if (typeof img === typeof undefined) {
-            headline = '<div class="noImage"><h2 class="headline">Dein Ergebnis</h2>';
-        } else {
-            headline = '<div><h2 class="headline">Dein Ergebnis</h2>';
-        }
+        var headline = '<div><h2 class="headline">Dein Ergebnis</h2>';
         var name = '';
         if (typeof profile.name !== typeof undefined) {
             name = '<h2>' + profile.name + '</h2><br>';
@@ -112,7 +107,12 @@ class ImageCreator {
             image = '<img src="' + profile.profile_pic.data + '">';
         }
         var progress = '<div class="progressContainer"><span class="progress" style="width:' + calculatedResult.percent + '%;">' + calculatedResult.percent + '%</span></div>';
-        var resultText = '<h1 class="result">Du bist mit einer Wahrscheinlichkeit von ...</h1>';
+        var resultText;
+        if (typeof profile.profile_pic !== typeof undefined) {
+            resultText = '<h1 class="result">Du bist mit einer Wahrscheinlichkeit von ...</h1>';
+        }else{
+            resultText = '<h1 class="result noImage">Du bist mit einer Wahrscheinlichkeit von ...</h1>';
+        }
         var solution = '<h1 class="result">am besten geeignet für den Job als<br>'
         if (calculatedResult.total === 1) {
             solution += 'Backend Developer';
