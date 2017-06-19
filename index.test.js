@@ -1,6 +1,7 @@
 var expect = require('chai').expect;
 var assert = require('chai').assert;
 var should = require('chai').should();
+var have = require('chai').have;
 var bot = require('./index');
 const path = require('path');
 const ImageCreator = require('./createResult');
@@ -261,10 +262,37 @@ describe('bot', function () {
     it('should be able to recognize that the survey is finished', function (done) {
         client1 = io.connect(socketURL, options);
         client1.on('connect', function (data) {
-            var messages = 0;
             client1.on('message', function (message) {
                 message.text.should.equal(bot.finishMessage);
+                client1.disconnect();
                 done();
+            });
+            client1.emit('message', {
+                id: id,
+                action: "init"
+            });
+        });
+    });
+
+    it('should be able to send me my results', function (done) {
+        client1 = io.connect(socketURL, options);
+        client1.on('connect', function (data) {
+            var messages = 0;
+            client1.on('message', function (message) {
+                if(messages === 1){
+                    console.log(message);
+                    message.text.should.equal("Das kannst du dir gerne an die Wand hängen!");
+                    expect(message).to.have.property('attachment');
+                    expect(message).to.be.an('object');
+                    message.attachment.type.should.equal("image.*");
+                    expect(message.attachment.url).to.be.an('string');
+                    client1.disconnect();
+                    done();
+                }
+                if(messages === 0){
+                    message.text.should.equal(bot.finishMessage);
+                }
+                messages++;
             });
             client1.emit('message', {
                 id: id,

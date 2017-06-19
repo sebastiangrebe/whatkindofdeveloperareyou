@@ -84,7 +84,11 @@ The Docker image is based on the original [nginx](https://hub.docker.com/_/nginx
 You just need to run these commands:
 
     docker pull sebi55/whatkindofdeveloperareyou
-    docker run sebi55/whatkindofdeveloperareyou
+    docker run --name whatkindofdeveloperareyou -d -p 80:3000 sebi55/whatkindofdeveloperareyou
+
+Or if you like the short version using docker-compose then just go into the folder and run:
+
+    docker-compose up
 
 Every should be working now.
 The Docker image ensures that port 80 of it is proxied to port 3000
