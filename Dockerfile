@@ -1,5 +1,7 @@
 FROM nginx
 
+ENV DEBIAN_FRONTEND noninteractive
+
 # install console and node
 RUN apt-get update && apt-get install curl gnupg wget -y &&\
     curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh &&\

@@ -1,5 +1,4 @@
 # whatkindofdeveloperareyou
-=========
 
 [![travis build](https://img.shields.io/travis/Sebi55/chartit.svg)](https://travis-ci.org/Sebi55/whatkindofdeveloperareyou)
 [![codecov coverage](https://img.shields.io/codecov/c/github/Sebi55/whatkindofdeveloperareyou.svg)](https://codecov.io/gh/Sebi55/whatkindofdeveloperareyou)
