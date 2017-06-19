@@ -96,7 +96,7 @@ describe('bot', function () {
         client1.on('connect', function (data) {
             client1.on('message', function (message) {
                 if (messages === 1) {
-                    message.text.should.equal("Dann auf die Plätze...");
+                    message.text.should.equal("Du kannst mit den Worten Zurück und Weiter im Fragebogen navigieren.");
                     client1.disconnect();
                     done();
                 }

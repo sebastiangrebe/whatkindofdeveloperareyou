@@ -12,9 +12,11 @@ class ImageCreator {
         this.createPersonalResult = this.createPersonalResult.bind(this);
     }
 
-    createPersonalResult(result, fb, img) {
+    createPersonalResult(result, fb) {
         var self = this;
-
+        var path = getFileUrl('result.html');
+        var personalResult = self.calculatePersonalResult(result.results, fb);
+        var resultHTML = self.personalResultToHTML(personalResult, result);
         return page.then((p) => {
             p.property('viewportSize', {
                 width: 800,
@@ -26,11 +28,8 @@ class ImageCreator {
                 margin: '0px'
             });
             p.property('zoomFactor', 1);
-            var path = getFileUrl('result.html');
             return p.open(getFileUrl('result.html')).then((status) => {
                 if (status === "success") {
-                    var personalResult = self.calculatePersonalResult(result.results, fb);
-                    var resultHTML = self.personalResultToHTML(personalResult, img, result);
                     var render = evaluate(p, function (resultHTML) {
                         var content = document.getElementById('content');
                         content.innerHTML = resultHTML;
@@ -44,6 +43,66 @@ class ImageCreator {
                 }
             });
         })
+    }
+
+    createGlobalResults(results, fb) {
+        var self = this;
+        let numbers = [
+            0,
+            0,
+            0
+        ];
+        for (let prop in results) {
+            if(results[prop].status === 'abgeschlossen'){
+                numbers[this.calculatePersonalResult(results[prop].results, fb).total-1]++;
+            }
+        }
+        return page.then((p) => {
+            p.property('viewportSize', {
+                width: 800,
+                height: 600
+            });
+            p.property('paperSize', {
+                width: '800px',
+                height: '600px',
+                margin: '0px'
+            });
+            p.property('zoomFactor', 1);
+            var path = getFileUrl('globalResult.html');
+            return p.open(getFileUrl('globalResult.html')).then((status) => {
+                if (status === "success") {
+                    var render = evaluate(p, function (numbers) {
+                        var content = document.getElementById('content');
+                        content.innerHTML = '<canvas id="chart" width="100" height="100"></canvas>';
+                        var myPieChart = new Chart(document.getElementById('chart'), {
+                            type: 'pie',
+                            data: {
+                                datasets: [{
+                                    data: numbers,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)'
+                                    ],
+                                }],
+                                labels: [
+                                    'Backendeveloper',
+                                    'Frontenddeveloper',
+                                    'Fullstackdeveloper'
+                                ]
+                            },
+                        });
+                    },numbers);
+                    return render.then(() => {
+                        var myBase64Result = p.renderBase64('PNG');
+                        return myBase64Result;
+                    });
+                } else {
+                    phantom.exit(1);
+                }
+            });
+        })
+
     }
 
     calculatePersonalResult(result, fb) {
@@ -96,7 +155,7 @@ class ImageCreator {
         };
     }
 
-    personalResultToHTML(calculatedResult, img, profile) {
+    personalResultToHTML(calculatedResult, profile) {
         var headline = '<div><h2 class="headline">Dein Ergebnis</h2>';
         var name = '';
         if (typeof profile.name !== typeof undefined) {
@@ -110,7 +169,7 @@ class ImageCreator {
         var resultText;
         if (typeof profile.profile_pic !== typeof undefined) {
             resultText = '<h1 class="result">Du bist mit einer Wahrscheinlichkeit von ...</h1>';
-        }else{
+        } else {
             resultText = '<h1 class="result noImage">Du bist mit einer Wahrscheinlichkeit von ...</h1>';
         }
         var solution = '<h1 class="result">am besten geeignet für den Job als<br>'

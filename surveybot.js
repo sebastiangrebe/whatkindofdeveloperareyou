@@ -8,6 +8,7 @@ class SurveyBot {
         this.createYesReceiver = this.createYesReceiver.bind(this);
         this.createNumberReceiver = this.createNumberReceiver.bind(this);
         this.createProfileCommandReceiver = this.createProfileCommandReceiver.bind(this);
+        this.createGlobalResultReceiver = this.createGlobalResultReceiver.bind(this);
         this.decideNextAction = this.decideNextAction.bind(this);
         this.createPersonalResult = this.createPersonalResult.bind(this);
         this.startFB = this.startFB.bind(this);
@@ -26,6 +27,7 @@ class SurveyBot {
         this.createNumberReceiver();
         this.createProfileCommandReceiver();
         this.createNavigationReceiver();
+        this.createGlobalResultReceiver();
     }
 
     createMessageReceiver() {
@@ -127,7 +129,7 @@ class SurveyBot {
         var self = this;
         this.bot.hears([/weiter/i], function (message, session) {
             let context = session.getUserContext();
-            let status = self.checkStatus(context,session);
+            let status = self.checkStatus(context, session);
             if (status) {
                 if (context.step < self.fragebogenprogrammierung.length - 1 &&
                     typeof context.results[self.fragebogenprogrammierung[context.step].id] !== typeof undefined &&
@@ -143,7 +145,7 @@ class SurveyBot {
 
         this.bot.hears([/zurück/i], function (message, session) {
             let context = session.getUserContext();
-            let status = self.checkStatus(context,session);
+            let status = self.checkStatus(context, session);
             if (status) {
                 if (context.step > 0) {
                     context.step--;
@@ -156,7 +158,25 @@ class SurveyBot {
         });
     }
 
-    checkStatus(context,session) {
+    createGlobalResultReceiver() {
+        var self = this;
+        this.bot.hears([/get global results/i], function (message, session) {
+            self.db.find({}, function (err, docs) {
+                if (!err) {
+                    self.imgcreator.createGlobalResults(docs, self.fragebogenprogrammierung).then((img) => {
+
+                        img = 'data:image/png;base64,' + img;
+                        session.send('Das sieht doch mal cool aus!', {
+                            type: 'image.*',
+                            url: img
+                        });
+                    });
+                }
+            });
+        });
+    }
+
+    checkStatus(context, session) {
         if (context.status !== 'offen' && context.status !== 'abgeschlossen') {
             return true;
         } else {
