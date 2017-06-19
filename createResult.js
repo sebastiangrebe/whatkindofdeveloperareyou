@@ -53,8 +53,8 @@ class ImageCreator {
             0
         ];
         for (let prop in results) {
-            if(results[prop].status === 'abgeschlossen'){
-                numbers[this.calculatePersonalResult(results[prop].results, fb).total-1]++;
+            if (results[prop].status === 'abgeschlossen') {
+                numbers[this.calculatePersonalResult(results[prop].results, fb).total - 1]++;
             }
         }
         return page.then((p) => {
@@ -74,7 +74,7 @@ class ImageCreator {
                     var render = evaluate(p, function (numbers) {
                         var content = document.getElementById('content');
                         content.innerHTML = '<canvas id="chart" width="100" height="100"></canvas>';
-                        var myPieChart = new Chart(document.getElementById('chart'), {
+                        var myPieChart = new Chart(document.getElementById('chart').getContext('2d'), {
                             type: 'pie',
                             data: {
                                 datasets: [{
@@ -91,8 +91,13 @@ class ImageCreator {
                                     'Fullstackdeveloper'
                                 ]
                             },
+                            options: {
+                                animation: {
+                                    duration: 0
+                                }
+                            }
                         });
-                    },numbers);
+                    }, numbers);
                     return render.then(() => {
                         var myBase64Result = p.renderBase64('PNG');
                         return myBase64Result;
