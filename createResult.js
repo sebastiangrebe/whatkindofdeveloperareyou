@@ -73,16 +73,16 @@ class ImageCreator {
                 if (status === "success") {
                     var render = evaluate(p, function (numbers) {
                         var content = document.getElementById('content');
-                        content.innerHTML = '<canvas id="chart" width="100" height="100"></canvas>';
+                        content.innerHTML = '<h2 class="headline">Die Ergebnisse</h2><canvas id="chart" width="500" height="400"></canvas>';
                         var myPieChart = new Chart(document.getElementById('chart').getContext('2d'), {
                             type: 'pie',
                             data: {
                                 datasets: [{
                                     data: numbers,
                                     backgroundColor: [
-                                        'rgba(255, 99, 132, 0.2)',
-                                        'rgba(54, 162, 235, 0.2)',
-                                        'rgba(255, 206, 86, 0.2)'
+                                        'rgba(232, 103, 107, 1)',
+                                        'rgba(61, 68, 81, 1)',
+                                        'rgba(6, 144, 250, 1)'
                                     ],
                                 }],
                                 labels: [
@@ -94,7 +94,8 @@ class ImageCreator {
                             options: {
                                 animation: {
                                     duration: 0
-                                }
+                                },
+                                responsive: false
                             }
                         });
                     }, numbers);
