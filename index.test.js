@@ -349,6 +349,36 @@ describe('bot', function () {
         client1.on('connect', function (data) {
             var messages = 0;
             client1.on('message', function (message) {
+                if (messages === 3) {
+                    chai.expect(message).to.have.property('attachment');
+                    chai.expect(message).to.be.an('object');
+                    message.attachment.type.should.equal("image.*");
+                    chai.expect(message.attachment.url).to.be.an('string');
+                    client1.disconnect();
+                    done();
+                }
+                if (messages === 2) {
+                    client1.emit('message', {
+                        text: 'get global results'
+                    });
+                }
+                if (messages === 0) {
+                    message.text.should.equal(bot.surveybot.finishMessage);
+                }
+                messages++;
+            });
+            client1.emit('message', {
+                id: id,
+                action: "init"
+            });
+        });
+    });
+
+    it('should be able to get the global results', function (done) {
+        client1 = io.connect(socketURL, options);
+        client1.on('connect', function (data) {
+            var messages = 0;
+            client1.on('message', function (message) {
                 if (messages === 4) {
                     message.text.should.equal('Danke wir haben dein Bild gespeichert! Hier deine aktualisierten Ergebnisse!');
                     done();
