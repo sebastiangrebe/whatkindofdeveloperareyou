@@ -1,4 +1,5 @@
-var fs = require('fs');
+var fs = require('fs'),
+    path = require('path');
 const phantom = require('phantom');
 var page;
 phantom.create().then((instance, err) => {
@@ -82,7 +83,7 @@ class ImageCreator {
                                         'rgba(232, 103, 107, 1)',
                                         'rgba(61, 68, 81, 1)',
                                         'rgba(6, 144, 250, 1)'
-                                    ],
+                                    ]
                                 }],
                                 labels: [
                                     'Backendeveloper',
@@ -120,36 +121,43 @@ class ImageCreator {
     // Calculates category in which the current participant has fallen and how much he is fitting this position
     calculatePersonalResult(result, fb) {
         let mw = 0;
+        result.has
         let max = 0;
         for (let prop in fb) {
-            switch (fb[prop].type) {
-                case 'rating':
-                    max += fb[prop].skala.max / 2;
-                    if (result[fb[prop].id].wert <= fb[prop].skala.max / 2) {
-                        mw += -(fb[prop].skala.max / 2 - (result[fb[prop].id].wert - 1));
-                    } else {
-                        mw += (result[fb[prop].id].wert - fb[prop].skala.max / 2);
-                    }
-                    break;
-                case 'multi':
-                    switch (fb[prop].action.type) {
-                        case 'one':
-                            max++;
-                            mw += result[fb[prop].id].wert;
-                            break;
-                        case 'two':
-                            max++;
-                            if (result[fb[prop].id].wert.ergebnis > 0) {
-                                mw--;
-                            }
-                            if (result[fb[prop].id].wert.ergebnis < 0) {
-                                mw++;
-                            }
-                            break;
-                    }
-                    break;
+            if (fb.hasOwnProperty(prop)) {
+                switch (fb[prop].type) {
+                    case 'rating':
+                        max += fb[prop].skala.max / 2;
+                        if (result[fb[prop].id].wert <= fb[prop].skala.max / 2) {
+                            mw += -(fb[prop].skala.max / 2 - (result[fb[prop].id].wert - 1));
+                        } else {
+                            mw += (result[fb[prop].id].wert - fb[prop].skala.max / 2);
+                        }
+                        break;
+                    case 'multi':
+                        switch (fb[prop].action.type) {
+                            case 'one':
+                                max++;
+                                mw += result[fb[prop].id].wert;
+                                break;
+                            case 'two':
+                                max++;
+                                if (result[fb[prop].id].wert.ergebnis > 0) {
+                                    mw--;
+                                }
+                                if (result[fb[prop].id].wert.ergebnis < 0) {
+                                    mw++;
+                                }
+                                break;
+                        }
+                        break;
+                }
             }
         }
+        return decideUserCategory(mw);
+    }
+
+    decideUserCategory(mw) {
         if (mw > 0) {
             return {
                 total: 2,
@@ -177,9 +185,9 @@ class ImageCreator {
         }
         var image = '';
         if (typeof profile.profile_pic !== typeof undefined) {
-            if(name === ''){
+            if (name === '') {
                 image = '<img class="noName" src="' + profile.profile_pic.data + '">';
-            }else{
+            } else {
                 image = '<img src="' + profile.profile_pic.data + '">';
             }
         }
@@ -190,31 +198,34 @@ class ImageCreator {
         } else {
             resultText = '<h1 class="result noImage">Du bist mit einer Wahrscheinlichkeit von ...</h1>';
         }
-        var solution = '<h1 class="result">am besten geeignet für den Job als<br>'
-        if (calculatedResult.total === 1) {
-            solution += 'Backend Developer';
-        }
-        if (calculatedResult.total === 2) {
-            solution += 'Frontend Developer';
-        }
-        if (calculatedResult.total === 3) {
-            solution += '... Full-Stack Developer. Kannst dich wohl nicht entscheiden ;)';
-        }
-        solution += '</h1>';
+        var solution = '<h1 class="result">am besten geeignet für den Job als<br>' + this.getUserCategory(calculatedResult.total) + '</h1>';
         var splitter = '<h3 class="splitter">... zu ...</h3>';
         return headline + name + image + resultText + progress + solution + '</div>';
+    }
+
+    getUserCategory(total) {
+        if (total === 1) {
+            return 'Backend Developer';
+        }
+        if (total === 2) {
+            return 'Frontend Developer';
+        }
+        if (total === 3) {
+            return '... Full-Stack Developer. Kannst dich wohl nicht entscheiden ;)';
+        }
+        return '';
     }
 }
 
 // Uses the current path to build the absolute path to the needed file
 function getFileUrl(str) {
-    var pathName = (__dirname + '/' + str).replace(/\\/g, '/');
+    var pathName = path.join(__dirname, str).replace(/\\/g, '/');
     // Windows drive letter must be prefixed with a slash
     if (pathName[0] !== "/") {
         pathName = "/" + pathName;
     }
     return encodeURI("file://" + pathName);
-};
+}
 
 // Encapsulates the passed functions and adds alls arguments after the second one into the evalute function
 function evaluate(page, func) {
