@@ -95,7 +95,13 @@ class ImageCreator {
                                 animation: {
                                     duration: 0
                                 },
-                                responsive: false
+                                responsive: false,
+                                pieceLabel: {
+                                    mode: 'percentage',
+                                    precision: 2,
+                                    fontSize: 18,
+                                    fontStyle: 'bold'
+                                }
                             }
                         });
                     }, numbers);
