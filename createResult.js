@@ -26,11 +26,6 @@ class ImageCreator {
                 width: 800,
                 height: 600
             });
-            p.property('paperSize', {
-                width: '800px',
-                height: '600px',
-                margin: '0px'
-            });
             p.property('zoomFactor', 1);
             return p.open(getFileUrl('result.html')).then((status) => {
                 if (status === "success") {
@@ -69,11 +64,6 @@ class ImageCreator {
             p.property('viewportSize', {
                 width: 800,
                 height: 600
-            });
-            p.property('paperSize', {
-                width: '800px',
-                height: '600px',
-                margin: '0px'
             });
             p.property('zoomFactor', 1);
             var path = getFileUrl('globalResult.html');
@@ -187,7 +177,11 @@ class ImageCreator {
         }
         var image = '';
         if (typeof profile.profile_pic !== typeof undefined) {
-            image = '<img src="' + profile.profile_pic.data + '">';
+            if(name === ''){
+                image = '<img class="noName" src="' + profile.profile_pic.data + '">';
+            }else{
+                image = '<img src="' + profile.profile_pic.data + '">';
+            }
         }
         var progress = '<div class="progressContainer"><span class="progress" style="width:' + calculatedResult.percent + '%;">' + calculatedResult.percent + '%</span></div>';
         var resultText;

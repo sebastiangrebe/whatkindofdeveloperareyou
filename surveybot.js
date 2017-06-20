@@ -1,7 +1,9 @@
 class SurveyBot {
     constructor(props) {
         for (let prop in props) {
-            this[prop] = props[prop];
+            if (props.hasOwnProperty(prop)) {
+                this[prop] = props[prop];
+            }
         }
 
         // Check if all required parameters are passed
@@ -14,27 +16,21 @@ class SurveyBot {
             }
         }
 
-        // Bind the current context into all functions
-        this.createMessageReceiver = this.createMessageReceiver.bind(this);
-        this.createYesReceiver = this.createYesReceiver.bind(this);
-        this.createNumberReceiver = this.createNumberReceiver.bind(this);
-        this.createProfileCommandReceiver = this.createProfileCommandReceiver.bind(this);
-        this.createGlobalResultReceiver = this.createGlobalResultReceiver.bind(this);
-        this.decideNextAction = this.decideNextAction.bind(this);
-        this.createPersonalResult = this.createPersonalResult.bind(this);
-        this.startFB = this.startFB.bind(this);
-        this.continueFB = this.continueFB.bind(this);
-        this.finishFB = this.finishFB.bind(this);
-        this.receiveMultiFrage = this.receiveMultiFrage.bind(this);
-        this.calcMultiTwo = this.calcMultiTwo.bind(this);
-        this.createUserContext = this.createUserContext.bind(this);
-        this.updateUserContext = this.updateUserContext.bind(this);
-        this.sendFurtherCommands = this.sendFurtherCommands.bind(this);
-        this.receiveProfileName = this.receiveProfileName.bind(this);
-        this.receiveProfilePic = this.receiveProfilePic.bind(this);
-        this.createNavigationReceiver = this.createNavigationReceiver.bind(this);
+        this.bindContext = this.bindContext.bind(this);
+        this.bindContext();
+        this.createReceivers();
+    }
 
-        // Create the receivers which will receive all messages and handle them
+    // Binds the current context to all functions where needed
+    bindContext() {
+        this.receiveMultiFrage = this.receiveMultiFrage.bind(this);
+        this.receiveProfilePic = this.receiveProfilePic.bind(this);
+        this.receiveProfileName = this.receiveProfileName.bind(this);
+        this.createGlobalResultReceiver = this.createGlobalResultReceiver.bind(this);
+    }
+
+    // Create the receivers which will receive all messages and handle them
+    createReceivers() {
         this.createMessageReceiver();
         this.createYesReceiver();
         this.createNumberReceiver();
@@ -155,7 +151,7 @@ class SurveyBot {
         var self = this;
         this.bot.hears([/change profile/i], function (message, session) {
             // Remove "change profile" and trim the leftover string
-            let command = message.text.replace('change profile', "").trim();
+            var command = message.text.replace('change profile', "").trim();
             // If the leftover string matches one of the following string the matching function is executed using the exclusive property inside the context.
             switch (command) {
                 case 'pic':
@@ -170,13 +166,16 @@ class SurveyBot {
                     });
                     session.send('Alles klar. Deine nächste Nachricht sollte deinen Namen enthalten.');
                     break;
+                default:
+                    session.send('Ich hab dich nicht verstanden versuch es noch einmal!');
+                    break;
             }
         });
     }
 
     /*
-    *  This function creates two listeners for the navigation of the survey. On for forward one for backward.
-    */
+     *  This function creates two listeners for the navigation of the survey. On for forward one for backward.
+     */
     createNavigationReceiver() {
         var self = this;
         this.bot.hears([/weiter/i], function (message, session) {
@@ -215,8 +214,8 @@ class SurveyBot {
     }
 
     /*
-    *  This listener matches all messages asking for the global results
-    */
+     *  This listener matches all messages asking for the global results
+     */
     createGlobalResultReceiver() {
         var self = this;
         this.bot.hears([/get global results/i], function (message, session) {
@@ -286,7 +285,7 @@ class SurveyBot {
             this.updateUserContext(session, context);
             session.send('Danke wir haben deinen Namen gespeichert! Hier deine aktualisierten Ergebnisse!');
             this.createPersonalResult(session, context, true);
-        }else{
+        } else {
             session.send('Du musst einen Text schicken. Versuch es noch einmal.');
         }
     }
@@ -320,10 +319,10 @@ class SurveyBot {
     }
 
     /*
-    *  This function sends the result image to user.
-    *  If the image has already been generated and the overwrite parameter is not defined then the already generated is send from the database.
-    *  This saves the instance from generating the same image again.
-    */
+     *  This function sends the result image to user.
+     *  If the image has already been generated and the overwrite parameter is not defined then the already generated is send from the database.
+     *  This saves the instance from generating the same image again.
+     */
     createPersonalResult(session, context, overwrite) {
         var self = this;
         if (typeof context.resultImage === typeof undefined || (typeof overwrite !== typeof undefined && overwrite)) {
@@ -449,7 +448,7 @@ class SurveyBot {
             }
             let wert = {};
             let valid = false;
-            let frage = this.fragebogenprogrammierung[context.step];
+            var frage = this.fragebogenprogrammierung[context.step];
             // Based on the type of multi question a specific calculation is made
             switch (frage.action.type) {
                 case 'one':
@@ -462,10 +461,10 @@ class SurveyBot {
                     break;
                 case 'two':
                     /* 
-                    *  Expects a comma seperated list of items matching hopefully one of them inside the two passed arrays
-                    *  Calculates from two lists to choose from which one of them received more answers in the entered list
-                    *  The winning lists is interpreted as value of 1 or -1
-                    */
+                     *  Expects a comma seperated list of items matching hopefully one of them inside the two passed arrays
+                     *  Calculates from two lists to choose from which one of them received more answers in the entered list
+                     *  The winning lists is interpreted as value of 1 or -1
+                     */
                     wert.one = {};
                     wert.two = {};
                     let countone = 0;
@@ -500,9 +499,9 @@ class SurveyBot {
     }
 
     /* 
-    *  Calculates the result for a comma separated list and a give index of an string array
-    *  It saves for each string inside the array if it has been entered, how many of them has been entered
-    */ 
+     *  Calculates the result for a comma separated list and a give index of an string array
+     *  It saves for each string inside the array if it has been entered, how many of them has been entered
+     */
     calcMultiTwo(frage, index, text) {
         let array = frage.action[index];
         let count = 0;
@@ -563,7 +562,7 @@ class SurveyBot {
     sendFurtherCommands(session, context) {
         let commandString = 'Du kannst die Art wie deine Ergebnisse anpassen. Hier die sehr kurze Kommandoliste:\n';
         for (let prop in this.profileActions) {
-            if(this.profileActions.hasOwnProperty(prop)){
+            if (this.profileActions.hasOwnProperty(prop)) {
                 commandString += prop + ') ' + this.profileActions[prop].command + " " + this.profileActions[prop].parameter + '\n';
             }
         }

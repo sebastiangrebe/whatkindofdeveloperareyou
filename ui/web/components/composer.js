@@ -40,12 +40,12 @@ class Composer extends React.Component {
   }
 
   onSubmit(e) {
+    e.preventDefault();
     var text = this.refs.text.value;
 
     if (text.length > 0) {
-      e.preventDefault()
-      this.props.onSubmit(text)
-      this.clearInput()
+      this.props.onSubmit(text);
+      this.clearInput();
     }
   }
 

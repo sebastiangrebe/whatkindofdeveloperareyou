@@ -58,12 +58,20 @@ class Session {
   }
 
   updateUserContext(newValues) {
-    if(typeof this.bot.memory.users[this.user] === typeof undefined){
-      this.bot.memory.users[this.user]=newValues;
-    }else{
+    if (typeof this.bot.memory.users[this.user] === typeof undefined) {
+      this.bot.memory.users[this.user] = newValues;
+    } else {
       const context = this.bot.memory.users[this.user] || {};
       this.bot.memory.users[this.user] = Object.assign(context, newValues);
     }
+  }
+
+  setUpdateUserContext(call) {
+    this.updateUserContext = call;
+  }
+
+  setGetUserContext(call) {
+    this.updateUserContext = call;
   }
 }
 module.exports = Session;
