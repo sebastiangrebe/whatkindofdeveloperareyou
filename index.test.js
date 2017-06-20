@@ -212,7 +212,7 @@ describe('bot', function () {
                             message.text.should.equal('Nächste Frage...');
                             done();
                         }
-                        if(messages === 5){
+                        if (messages === 5) {
                             client1.emit('message', {
                                 text: "weiter"
                             });
@@ -220,7 +220,7 @@ describe('bot', function () {
                         if (messages === 4) {
                             message.text.should.equal('Nächste Frage...');
                         }
-                        if(messages === 3){
+                        if (messages === 3) {
                             client1.emit('message', {
                                 text: "zurück"
                             });
@@ -245,72 +245,147 @@ describe('bot', function () {
                 });
             });
         }
-        it('should be able to answer the survey question ' + i, function (done) {
-            client1 = io.connect(socketURL, options);
-            client1.on('connect', function (data) {
-                var messages = 0;
-                client1.on('message', function (message) {
-                    if (messages === 4) {
-                        if (step === bot.surveybot.fragebogenprogrammierung.length - 1) {
-                            message.text.should.equal(bot.surveybot.finishMessage);
-                        } else {
-                            message.text.should.equal('Nächste Frage...');
+        if (i === 2) {
+            it('should be able to answer the survey question ' + i, function (done) {
+                client1 = io.connect(socketURL, options);
+                client1.on('connect', function (data) {
+                    var messages = 0;
+                    var frage;
+                    client1.on('message', function (message) {
+                        if (messages === 5) {
+                            if (step === bot.surveybot.fragebogenprogrammierung.length - 1) {
+                                message.text.should.equal(bot.surveybot.finishMessage);
+                            } else {
+                                message.text.should.equal('Nächste Frage...');
+                            }
+                            client1.disconnect();
+                            done();
                         }
-                        client1.disconnect();
-                        done();
-                    }
-                    if (messages === 3) {
-                        step++;
-                        var frage;
-                        for (var j = 0; j < bot.surveybot.fragebogenprogrammierung.length; j++) {
-                            if (message.text.indexOf(bot.surveybot.fragebogenprogrammierung[j].frage) !== -1) {
-                                frage = bot.surveybot.fragebogenprogrammierung[j];
-                                break;
+                        if (messages === 4) {
+                            message.text.should.equal("Deine Antwort liegt nicht innerhalb der Skalen! Versuch es noch einmal.");
+                            step++;
+                            switch (frage.type) {
+                                case 'rating':
+                                    client1.emit('message', {
+                                        text: "1"
+                                    });
+                                    break;
+                                case 'multi':
+                                    switch (frage.action.type) {
+                                        case 'one':
+                                            client1.emit('message', {
+                                                text: '1'
+                                            });
+                                            break;
+                                        case 'two':
+                                            client1.emit('message', {
+                                                text: frage.action.one[0]
+                                            });
+                                            break;
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
                         }
-                        switch (frage.type) {
-                            case 'rating':
-                                client1.emit('message', {
-                                    text: "1"
-                                });
-                                break;
-                            case 'multi':
-                                switch (frage.action.type) {
-                                    case 'one':
-                                        client1.emit('message', {
-                                            text: '1'
-                                        });
-                                        break;
-                                    case 'two':
-                                        client1.emit('message', {
-                                            text: frage.action.one[0]
-                                        });
-                                        break;
+                        if (messages === 3) {
+                            for (var j = 0; j < bot.surveybot.fragebogenprogrammierung.length; j++) {
+                                if (message.text.indexOf(bot.surveybot.fragebogenprogrammierung[j].frage) !== -1) {
+                                    frage = bot.surveybot.fragebogenprogrammierung[j];
+                                    break;
                                 }
-                                break;
-                            default:
-                                break;
+                            }
+                            client1.emit('message', {
+                                text: "999"
+                            });
                         }
-                    }
-                    if (messages === 2) {
-                        message.text.should.equal('Nächste Frage...');
-                    }
-                    if (messages === 1) {
-                        message.text.should.equal('Es geht weiter!');
-                    }
-                    if (messages === 0) {
-                        client1.emit('message', {
-                            text: "ja"
-                        });
-                    }
-                    messages++;
-                });
-                client1.emit('message', {
-                    id: id,
-                    action: "init"
+                        if (messages === 2) {
+                            message.text.should.equal('Nächste Frage...');
+                        }
+                        if (messages === 1) {
+                            message.text.should.equal('Es geht weiter!');
+                        }
+                        if (messages === 0) {
+                            client1.emit('message', {
+                                text: "ja"
+                            });
+                        }
+                        messages++;
+                    });
+                    client1.emit('message', {
+                        id: id,
+                        action: "init"
+                    });
                 });
             });
-        });
+        } else {
+            it('should be able to answer the survey question ' + i, function (done) {
+                client1 = io.connect(socketURL, options);
+                client1.on('connect', function (data) {
+                    var messages = 0;
+                    client1.on('message', function (message) {
+                        if (messages === 4) {
+                            if (step === bot.surveybot.fragebogenprogrammierung.length - 1) {
+                                message.text.should.equal(bot.surveybot.finishMessage);
+                            } else {
+                                message.text.should.equal('Nächste Frage...');
+                            }
+                            client1.disconnect();
+                            done();
+                        }
+                        if (messages === 3) {
+                            step++;
+                            var frage;
+                            for (var j = 0; j < bot.surveybot.fragebogenprogrammierung.length; j++) {
+                                if (message.text.indexOf(bot.surveybot.fragebogenprogrammierung[j].frage) !== -1) {
+                                    frage = bot.surveybot.fragebogenprogrammierung[j];
+                                    break;
+                                }
+                            }
+                            switch (frage.type) {
+                                case 'rating':
+                                    client1.emit('message', {
+                                        text: "1"
+                                    });
+                                    break;
+                                case 'multi':
+                                    switch (frage.action.type) {
+                                        case 'one':
+                                            client1.emit('message', {
+                                                text: '1'
+                                            });
+                                            break;
+                                        case 'two':
+                                            client1.emit('message', {
+                                                text: frage.action.one[0]
+                                            });
+                                            break;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        if (messages === 2) {
+                            message.text.should.equal('Nächste Frage...');
+                        }
+                        if (messages === 1) {
+                            message.text.should.equal('Es geht weiter!');
+                        }
+                        if (messages === 0) {
+                            client1.emit('message', {
+                                text: "ja"
+                            });
+                        }
+                        messages++;
+                    });
+                    client1.emit('message', {
+                        id: id,
+                        action: "init"
+                    });
+                });
+            });
+        }
     }
 
     it('should be able to recognize that the survey is finished', function (done) {
@@ -387,7 +462,33 @@ describe('bot', function () {
         });
     });
 
-    it('should be able to change my profile pic', function (done) {
+    it('should be able to send me an error for an invalid change profile command', function (done) {
+        client1 = io.connect(socketURL, options);
+        client1.on('connect', function (data) {
+            var messages = 0;
+            client1.on('message', function (message) {
+                if (messages === 3) {
+                    message.text.should.equal('Ich hab dich nicht verstanden versuch es noch einmal!');
+                    done();
+                }
+                if (messages === 2) {
+                    client1.emit('message', {
+                        text: 'change profile fehler'
+                    });
+                }
+                if (messages === 0) {
+                    message.text.should.equal(bot.surveybot.finishMessage);
+                }
+                messages++;
+            });
+            client1.emit('message', {
+                id: id,
+                action: "init"
+            });
+        });
+    });
+
+    it('should be able to change my profile pic', function (done) { 
         client1 = io.connect(socketURL, options);
         client1.on('connect', function (data) {
             var messages = 0;

@@ -39,9 +39,8 @@ class ImageCreator {
                         var myBase64Result = p.renderBase64('PNG');
                         return myBase64Result;
                     });
-                } else {
-                    phantom.exit(1);
                 }
+                phantom.exit();
             });
         })
     }
@@ -110,9 +109,8 @@ class ImageCreator {
                         var myBase64Result = p.renderBase64('PNG');
                         return myBase64Result;
                     });
-                } else {
-                    phantom.exit(1);
                 }
+                phantom.exit();
             });
         })
 
