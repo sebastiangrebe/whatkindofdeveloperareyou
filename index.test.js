@@ -1,7 +1,6 @@
-var expect = require('chai').expect;
-var assert = require('chai').assert;
-var should = require('chai').should();
-var have = require('chai').have;
+const chai = require('chai'),
+    chaiHttp = require('chai-http');
+const should = chai.should();
 var bot = require('./index');
 const path = require('path');
 const ImageCreator = require('./createResult');
@@ -18,17 +17,18 @@ var options = {
     'force new connection': true
 };
 
+chai.use(chaiHttp);
 
 describe('bot', function () {
     this.timeout(10000);
     it('should work!', function () {
-        expect(true).to.be.true;
+        chai.expect(true).to.be.true;
     });
     it('should have a database', function (done) {
         bot.db.filename.should.equal(appRoot + '/whatkindofdeveloperareyou.db');
         bot.db.inMemoryOnly.should.equal(false);
         bot.db.find({}, function (err, docs) {
-            assert.isNull(err);
+            chai.assert.isNull(err);
             docs.length.should.equal(0);
             done();
         });
@@ -39,6 +39,17 @@ describe('bot', function () {
         client1.on('connect', function (data) {
             done();
         });
+    });
+
+    it('should have a ui', function (done) {
+        chai.request('http://localhost:3000')
+            .get('/').then(function (res) {
+                chai.expect(res).to.have.status(200);
+                done();
+            })
+            .catch(function (err) {
+                throw err;
+            });
     });
 
     it('should give me a welcome message', function (done) {
@@ -57,7 +68,7 @@ describe('bot', function () {
         bot.db.findOne({
             _id: id
         }, function (err, doc) {
-            assert.isNull(err);
+            chai.assert.isNull(err);
             doc._id.should.equal(id);
             doc.status.should.equal("offen");
             doc.step.should.equal(-1);
@@ -279,17 +290,84 @@ describe('bot', function () {
         client1.on('connect', function (data) {
             var messages = 0;
             client1.on('message', function (message) {
-                if(messages === 1){
-                    console.log(message);
+                if (messages === 1) {
                     message.text.should.equal("Das kannst du dir gerne an die Wand hängen!");
-                    expect(message).to.have.property('attachment');
-                    expect(message).to.be.an('object');
+                    chai.expect(message).to.have.property('attachment');
+                    chai.expect(message).to.be.an('object');
                     message.attachment.type.should.equal("image.*");
-                    expect(message.attachment.url).to.be.an('string');
+                    chai.expect(message.attachment.url).to.be.an('string');
                     client1.disconnect();
                     done();
                 }
-                if(messages === 0){
+                if (messages === 0) {
+                    message.text.should.equal(bot.surveybot.finishMessage);
+                }
+                messages++;
+            });
+            client1.emit('message', {
+                id: id,
+                action: "init"
+            });
+        });
+    });
+
+    it('should be able to change my profile name', function (done) {
+        client1 = io.connect(socketURL, options);
+        client1.on('connect', function (data) {
+            var messages = 0;
+            client1.on('message', function (message) {
+                if (messages === 4) {
+                    message.text.should.equal('Danke wir haben deinen Namen gespeichert! Hier deine aktualisierten Ergebnisse!');
+                    done();
+                }
+                if (messages === 3) {
+                    message.text.should.equal('Alles klar. Deine nächste Nachricht sollte deinen Namen enthalten.');
+                    client1.emit('message', {
+                        text: 'Test'
+                    });
+
+                }
+                if (messages === 2) {
+                    client1.emit('message', {
+                        text: 'change profile name'
+                    });
+                }
+                if (messages === 0) {
+                    message.text.should.equal(bot.surveybot.finishMessage);
+                }
+                messages++;
+            });
+            client1.emit('message', {
+                id: id,
+                action: "init"
+            });
+        });
+    });
+
+    it('should be able to change my profile pic', function (done) {
+        client1 = io.connect(socketURL, options);
+        client1.on('connect', function (data) {
+            var messages = 0;
+            client1.on('message', function (message) {
+                if (messages === 4) {
+                    message.text.should.equal('Danke wir haben dein Bild gespeichert! Hier deine aktualisierten Ergebnisse!');
+                    done();
+                }
+                if (messages === 3) {
+                    message.text.should.equal('Alles klar. Deine nächste Nachricht sollte ein Bild sein. Klicke einfach auf das File Icon unten rechts und wähle ein Profilbild aus.');
+                    client1.emit('message', {
+                        attachments: [{
+                            type: 'image',
+                            data: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wgARCAABAAEDAREAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAACv/EABQBAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhADEAAAAT/n/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABBQJ//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAwEBPwF//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAgEBPwF//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQAGPwJ//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPyF//9oADAMBAAIAAwAAABAf/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAwEBPxB//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAgEBPxB//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxB//9k="
+                        }]
+                    });
+                }
+                if (messages === 2) {
+                    client1.emit('message', {
+                        text: 'change profile pic'
+                    });
+                }
+                if (messages === 0) {
                     message.text.should.equal(bot.surveybot.finishMessage);
                 }
                 messages++;
