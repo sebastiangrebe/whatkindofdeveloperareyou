@@ -121,7 +121,6 @@ class ImageCreator {
     // Calculates category in which the current participant has fallen and how much he is fitting this position
     calculatePersonalResult(result, fb) {
         let mw = 0;
-        result.has
         let max = 0;
         for (let prop in fb) {
             if (fb.hasOwnProperty(prop)) {
@@ -154,10 +153,10 @@ class ImageCreator {
                 }
             }
         }
-        return decideUserCategory(mw);
+        return this.decideUserCategory(mw,max);
     }
 
-    decideUserCategory(mw) {
+    decideUserCategory(mw,max) {
         if (mw > 0) {
             return {
                 total: 2,
