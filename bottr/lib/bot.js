@@ -100,56 +100,6 @@ class Bot {
   use(component) {
     component(this);
   }
-
-  download(attachment, callback) {
-    if (attachment.url) {
-      this.downloadFileFromUrl(attachment.url, callback);
-    } else {
-      this.downloadFileFromData(attachment.data, callback);
-    }
-  }
-
-  downloadFileFromUrl(url, callback) {
-    const filename = uuid.v4();
-
-    if (!fs.existsSync(staticFilesDirectory)) {
-      fs.mkdirSync(staticFilesDirectory);
-    }
-
-    const r = request(url);
-    const s = fs.createWriteStream(`${staticFilesDirectory}/${filename}`);
-
-    r.on('response', (res) => {
-      res.pipe(s);
-    });
-
-    s.on('close', () => {
-      callback(`${staticFilesDirectory}/${filename}`);
-    });
-  }
-
-  downloadFileFromData(data, callback) {
-    const filename = uuid.v4();
-    const matches = data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-    const buffer = new Buffer(matches[2], 'base64');
-
-    if (!fs.existsSync(staticFilesDirectory)) {
-      fs.mkdirSync(staticFilesDirectory);
-    }
-
-    fs.writeFile(`${staticFilesDirectory}/${filename}`, buffer, 'base64');
-
-    callback(`${staticFilesDirectory}/${filename}`);
-  }
-
-  createTopic(callback) {
-    const topicID = Object.keys(this.topics).length;
-    this.topics[topicID] = new Topic();
-
-    callback(this.topics[topicID]);
-
-    return topicID;
-  }
 }
 
 module.exports = Bot;

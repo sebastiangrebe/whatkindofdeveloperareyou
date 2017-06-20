@@ -30,25 +30,4 @@ class Server {
   }
 }
 
-Bot.prototype.connectToSocket = function (io) {
-  const bot = this;
-
-  io.on('connection', (socket) => {
-    socket.on('message', (data) => {
-      const session = {
-        user: data.user,
-        conversation: data.user,
-        account: data.user,
-        send(text) {
-          socket.emit('message', {
-            text,
-          });
-        },
-      };
-
-      bot.trigger('message_received', data, session);
-    });
-  });
-};
-
 module.exports = Server;
