@@ -23,6 +23,12 @@ The bot is tested by simple Mocha/Chai test and verifies every bot function by s
 
 The tests are run by Travis CI on every push before publishing the new Docker image. This ensures that only tested and working versions of whatkindofdeveloperareyou are published.
 
+The personal result should look somewhat like this:
+![Personal Result](https://sebastian-grebe.com/wp-content/uploads/2017/06/result.png)
+
+The global results should look somewhat like this:
+![Global Results](https://sebastian-grebe.com/wp-content/uploads/2017/06/globalresults.png)
+
 ## Using whatkindofdeveloperareyou
 
 whatkindofdevelopareyou can be used a general survey bot. Not every function, question type and answer type are programmed but it offers the main functionalities to make survey which to determine a profile of the user between to positions like in the example the frontend developer and backend developer.
