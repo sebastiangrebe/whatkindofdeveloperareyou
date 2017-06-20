@@ -6,18 +6,22 @@ phantom.create().then((instance, err) => {
 });
 
 class ImageCreator {
-    constructor(root) {
-        this.root = root;
-
+    constructor() {
+        // Binds the current context into the two major functions
         this.createPersonalResult = this.createPersonalResult.bind(this);
+        this.createGlobalResults = this.createGlobalResults.bind(this);
     }
 
+    // Generates an image of your personal result by using the passed results and survey using phantomjs
     createPersonalResult(result, fb) {
         var self = this;
         var path = getFileUrl('result.html');
+        // Calculate the result which means the percent and category in which the current participant has fallen
         var personalResult = self.calculatePersonalResult(result.results, fb);
+        // Generate the html for the personal result of the current participant by passing his result from above
         var resultHTML = self.personalResultToHTML(personalResult, result);
         return page.then((p) => {
+            // Set the window size which will be the result image size
             p.property('viewportSize', {
                 width: 800,
                 height: 600
@@ -34,6 +38,7 @@ class ImageCreator {
                         var content = document.getElementById('content');
                         content.innerHTML = resultHTML;
                     }, resultHTML);
+                    // Return the rendered website as base64 image
                     return render.then(() => {
                         var myBase64Result = p.renderBase64('PNG');
                         return myBase64Result;
@@ -45,6 +50,7 @@ class ImageCreator {
         })
     }
 
+    // Generates an image of the global results by using the passed results and survey using phantomjs
     createGlobalResults(results, fb) {
         var self = this;
         let numbers = [
@@ -52,12 +58,14 @@ class ImageCreator {
             0,
             0
         ];
+        // Calculate the number of participants of the survey who finished there survey and fell into the 3 categories
         for (let prop in results) {
             if (results[prop].status === 'abgeschlossen') {
                 numbers[this.calculatePersonalResult(results[prop].results, fb).total - 1]++;
             }
         }
         return page.then((p) => {
+            // Set the window size which will be the result image size
             p.property('viewportSize', {
                 width: 800,
                 height: 600
@@ -74,6 +82,7 @@ class ImageCreator {
                     var render = evaluate(p, function (numbers) {
                         var content = document.getElementById('content');
                         content.innerHTML = '<h2 class="headline">Die Ergebnisse</h2><canvas id="chart" width="500" height="400"></canvas>';
+                        // Use the results to draw an simple pie chart using chart.js and Chart.PieceLabel
                         var myPieChart = new Chart(document.getElementById('chart').getContext('2d'), {
                             type: 'pie',
                             data: {
@@ -105,6 +114,7 @@ class ImageCreator {
                             }
                         });
                     }, numbers);
+                    // Return the rendered website as base64 image
                     return render.then(() => {
                         var myBase64Result = p.renderBase64('PNG');
                         return myBase64Result;
@@ -117,6 +127,7 @@ class ImageCreator {
 
     }
 
+    // Calculates category in which the current participant has fallen and how much he is fitting this position
     calculatePersonalResult(result, fb) {
         let mw = 0;
         let max = 0;
@@ -167,6 +178,7 @@ class ImageCreator {
         };
     }
 
+    // Generates from the result of calculatePersonalResult the html needed to render and take the pic for the user
     personalResultToHTML(calculatedResult, profile) {
         var headline = '<div><h2 class="headline">Dein Ergebnis</h2>';
         var name = '';
@@ -200,6 +212,7 @@ class ImageCreator {
     }
 }
 
+// Uses the current path to build the absolute path to the needed file
 function getFileUrl(str) {
     var pathName = (__dirname + '/' + str).replace(/\\/g, '/');
     // Windows drive letter must be prefixed with a slash
@@ -209,6 +222,7 @@ function getFileUrl(str) {
     return encodeURI("file://" + pathName);
 };
 
+// Encapsulates the passed functions and adds alls arguments after the second one into the evalute function
 function evaluate(page, func) {
     var args = [].slice.call(arguments, 2);
     var fn = "function() { return (" + func.toString() + ").apply(this, " + JSON.stringify(args) + ");}";

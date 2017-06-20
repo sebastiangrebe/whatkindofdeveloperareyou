@@ -96,9 +96,8 @@ Or if you like the short version using docker-compose then just go into the fold
 
     docker-compose up
 
-Every should be working now.
-The Docker image ensures that port 80 of it is proxied to port 3000
-of the whatkindofdeveloperareyou instance running inside.
+Everything should be working now.
+The Docker image ensures that port 80 is proxied to port 3000 of the whatkindofdeveloperareyou instance running inside.
 You should be able to just navigate to your container through your browser and see the bot.
 
 ## License
