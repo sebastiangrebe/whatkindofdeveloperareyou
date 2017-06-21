@@ -207,7 +207,7 @@ class SurveyBot {
                     self.updateUserContext(session, context);
                     self.continueFB(session);
                 } else {
-                    session.send('Du hast noch keine Frage beantwortet');
+                    session.send('Du kannst nicht weiter zurück gehen.');
                 }
             }
         });

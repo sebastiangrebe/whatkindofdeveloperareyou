@@ -20,7 +20,7 @@ var options = {
 chai.use(chaiHttp);
 
 describe('bot', function () {
-    this.timeout(10000);
+    this.timeout(20000);
     it('should work!', function () {
         chai.expect(true).to.be.true;
     });
@@ -208,9 +208,17 @@ describe('bot', function () {
                 client1.on('connect', function (data) {
                     var messages = 0;
                     client1.on('message', function (message) {
+                        if (messages === 8) {
+                            message.text.should.equal('Du musst zuerst die aktuelle Frage beantworten.');
+                            done();
+                        }
+                        if (messages === 7) {
+                            client1.emit('message', {
+                                text: "weiter"
+                            });
+                        }
                         if (messages === 6) {
                             message.text.should.equal('Nächste Frage...');
-                            done();
                         }
                         if (messages === 5) {
                             client1.emit('message', {
@@ -436,6 +444,7 @@ describe('bot', function () {
             client1.on('message', function (message) {
                 if (messages === 4) {
                     message.text.should.equal('Danke wir haben deinen Namen gespeichert! Hier deine aktualisierten Ergebnisse!');
+                    client1.disconnect();
                     done();
                 }
                 if (messages === 3) {
@@ -469,6 +478,7 @@ describe('bot', function () {
             client1.on('message', function (message) {
                 if (messages === 3) {
                     message.text.should.equal('Ich hab dich nicht verstanden versuch es noch einmal!');
+                    client1.disconnect();
                     done();
                 }
                 if (messages === 2) {
@@ -488,7 +498,7 @@ describe('bot', function () {
         });
     });
 
-    it('should be able to change my profile pic', function (done) { 
+    it('should be able to get the global results', function (done) {
         client1 = io.connect(socketURL, options);
         client1.on('connect', function (data) {
             var messages = 0;
@@ -518,13 +528,68 @@ describe('bot', function () {
         });
     });
 
-    it('should be able to get the global results', function (done) {
+    it('should be able to give me an error when incorrectly changing my profile pic', function (done) {
+        client1 = io.connect(socketURL, options);
+        client1.on('connect', function (data) {
+            var messages = 0;
+            client1.on('message', function (message) {
+                if (messages === 7) {
+                    message.text.should.equal('Du musst eine Bild Datei schicken. Versuch es noch einmal.');
+                    client1.disconnect();
+                    done();
+                }
+                if (messages === 6) {
+                    message.text.should.equal('Leider ist nichts angekommen. Versuch es noch einmal.');
+                    client1.emit('message', {
+                        attachments: [{
+                            type: 'fehler',
+                            data: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wgARCAABAAEDAREAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAACv/EABQBAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhADEAAAAT/n/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABBQJ//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAwEBPwF//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAgEBPwF//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQAGPwJ//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPyF//9oADAMBAAIAAwAAABAf/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAwEBPxB//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAgEBPxB//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxB//9k="
+                        }]
+                    });
+                }
+                if (messages === 5) {
+                    message.text.should.equal('Leider ist nichts angekommen. Versuch es noch einmal.');
+                    client1.emit('message', {
+
+                    });
+                }
+                if (messages === 4) {
+                    message.text.should.equal('Dein Bild muss als Datei und nicht als Text geschickt werden! Versuch es noch einmal.');
+                    client1.emit('message', {
+
+                    });
+                }
+                if (messages === 3) {
+                    message.text.should.equal('Alles klar. Deine nächste Nachricht sollte ein Bild sein. Klicke einfach auf das File Icon unten rechts und wähle ein Profilbild aus.');
+                    client1.emit('message', {
+                        text: "fehler"
+                    });
+                }
+                if (messages === 2) {
+                    client1.emit('message', {
+                        text: 'change profile pic'
+                    });
+                }
+                if (messages === 0) {
+                    message.text.should.equal(bot.surveybot.finishMessage);
+                }
+                messages++;
+            });
+            client1.emit('message', {
+                id: id,
+                action: "init"
+            });
+        });
+    });
+
+    it('should be able to change my profile pic', function (done) {
         client1 = io.connect(socketURL, options);
         client1.on('connect', function (data) {
             var messages = 0;
             client1.on('message', function (message) {
                 if (messages === 4) {
                     message.text.should.equal('Danke wir haben dein Bild gespeichert! Hier deine aktualisierten Ergebnisse!');
+                    client1.disconnect();
                     done();
                 }
                 if (messages === 3) {
@@ -539,6 +604,33 @@ describe('bot', function () {
                 if (messages === 2) {
                     client1.emit('message', {
                         text: 'change profile pic'
+                    });
+                }
+                if (messages === 0) {
+                    message.text.should.equal(bot.surveybot.finishMessage);
+                }
+                messages++;
+            });
+            client1.emit('message', {
+                id: id,
+                action: "init"
+            });
+        });
+    });
+
+    it('should be able to give me an error when trying to navigate through a finished survey', function (done) {
+        client1 = io.connect(socketURL, options);
+        client1.on('connect', function (data) {
+            var messages = 0;
+            client1.on('message', function (message) {
+                if (messages === 3) {
+                    message.text.should.equal('Du hast die Befragung bereits abgeschlossen und kannst dein Ergebnis nicht mehr bearbeiten.');
+                    client1.disconnect();
+                    done();
+                }
+                if (messages === 1) {
+                    client1.emit('message', {
+                        text: "zurück"
                     });
                 }
                 if (messages === 0) {
