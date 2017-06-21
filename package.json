@@ -42,7 +42,8 @@
   "nyc": {
     "exclude": [
       "bottr",
-      "ui"
+      "ui",
+      "index.test.js"
     ]
   },
   "scripts": {
