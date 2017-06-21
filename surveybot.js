@@ -234,7 +234,7 @@ class SurveyBot {
         });
     }
 
-    // This function check if navigation is allowed at all not specifying the direction of navigation
+    // This function checks if navigation is allowed at all not specifying the direction of navigation
     checkStatus(context, session) {
         if (context.status !== 'offen' && context.status !== 'abgeschlossen') {
             return true;
@@ -290,7 +290,7 @@ class SurveyBot {
         }
     }
 
-    // Checks if the given value matches the scale of the given rating question
+    // Check if the given value matches the scale of the given rating question
     checkRatingAnswer(frage, wert) {
         if (frage.type === 'rating' && typeof frage.skala !== typeof undefined) {
             if (wert >= frage.skala.min && wert <= frage.skala.max) {
@@ -377,7 +377,7 @@ class SurveyBot {
             this.finishFB(session);
         } else {
             // Whenever the user is already inside the survey send a recognition
-            if (context.step > 0) {
+            if ((context.step >= 0 && context.status === 'teilbefragt') || context.step > 0) {
                 this.sendRecognition(session);
             }
             // Based on the type of the question a function is run

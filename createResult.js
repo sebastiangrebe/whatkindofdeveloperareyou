@@ -40,7 +40,6 @@ class ImageCreator {
                         return myBase64Result;
                     });
                 }
-                phantom.exit();
             });
         })
     }
@@ -110,7 +109,6 @@ class ImageCreator {
                         return myBase64Result;
                     });
                 }
-                phantom.exit();
             });
         })
 

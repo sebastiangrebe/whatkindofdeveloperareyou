@@ -202,6 +202,55 @@ describe('bot', function () {
     });
     var step = 0;
     for (var i = 1; i < bot.surveybot.fragebogenprogrammierung.length; i++) {
+        if (i === 1) {
+            it('should be able to give me an error when navigating too far back', function (done) {
+                client1 = io.connect(socketURL, options);
+                client1.on('connect', function (data) {
+                    var messages = 0;
+                    client1.on('message', function (message) {
+                        if (messages === 7) {
+                            message.text.should.equal('Nächste Frage...');
+                            done();
+                        }
+                        if (messages === 6) {
+                            message.text.should.equal('Du kannst nicht weiter zurück gehen.');
+                            client1.emit('message', {
+                                text: "weiter"
+                            });
+                        }
+                        if (messages === 5) {
+                            client1.emit('message', {
+                                text: "zurück"
+                            });
+                        }
+                        if (messages === 4) {
+                            message.text.should.equal('Nächste Frage...');
+                        }
+                        if (messages === 3) {
+                            client1.emit('message', {
+                                text: "zurück"
+                            });
+                        }
+                        if (messages === 2) {
+                            message.text.should.equal('Nächste Frage...');
+                        }
+                        if (messages === 1) {
+                            message.text.should.equal('Es geht weiter!');
+                        }
+                        if (messages === 0) {
+                            client1.emit('message', {
+                                text: "ja"
+                            });
+                        }
+                        messages++;
+                    });
+                    client1.emit('message', {
+                        id: id,
+                        action: "init"
+                    });
+                });
+            });
+        }
         if (i === 3) {
             it('should be able to navigate through the survey', function (done) {
                 client1 = io.connect(socketURL, options);
