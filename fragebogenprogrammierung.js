@@ -31,6 +31,25 @@ const topics = [{
     text: "Cross-Platform Support",
     wert: 1
 }];
+const percs = [{
+    text: "Musik hören",
+    wert: -1
+},{
+    text: "Unbegrenzt Kaffee",
+    wert: -1
+},{
+    text: "Frische Getränke und was gesundes in der Küche",
+    wert: 1
+},{
+    text: "Life Coaching",
+    wert: 1
+},{
+    text: "Sportmaßnahmen",
+    wert: -1
+},{
+    text: "Geselliger Bier-Freitag",
+    wert: 1
+}];
 
 const profileActions = [{
         command: "change profile",
@@ -80,7 +99,7 @@ const fragebogenprogrammierung = [{
             max: 6,
             type: 'zustimmung'
         },
-        frage: 'Ich find regelmäße Code Reviews sehr wichtig.'
+        frage: 'Ich finde regelmäßige Code Reviews sehr wichtig.'
     },
     {
         id: "F5",
@@ -106,6 +125,48 @@ const fragebogenprogrammierung = [{
             two: frontend_languages
         },
         frage: 'Welche Programmiersprachen verwendest du am liebsten?'
+    },
+    {
+        id: "F7",
+        type: 'rating',
+        skala: {
+            min: 1,
+            max: 6,
+            type: 'zustimmung'
+        },
+        frage: 'Unit Testing ist essentiell für stets gute Qualität meiner Arbeit.'
+    },
+    {
+        id: "F8",
+        type: 'rating',
+        skala: {
+            min: 1,
+            max: 6,
+            type: 'trifft'
+        },
+        frage: 'Die Effizienz meines Codes ist einer meiner höchsten Prioritäten.'
+    },
+    {
+        id: "F9",
+        type: 'rating',
+        skala: {
+            min: 1,
+            max: 6,
+            type: 'trifft'
+        },
+        frage: 'Ich hole mir regelmäßig Feedback von meinen Kollegen ein.'
+    },
+    {
+        id: "F10",
+        type: 'multi',
+        skala: {
+            text: 'Gib einfach die Zahl für das passende Element ein.'
+        },
+        action: {
+            type: 'one',
+            one: percs
+        },
+        frage: 'Was sind die wichtigsten Perks für dich bei der Arbeit?'
     }
 ];
 
