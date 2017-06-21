@@ -39,6 +39,12 @@
     "nyc": "10.1.2",
     "socket.io-client": "2.0.3"
   },
+  "nyc": {
+    "exclude": [
+      "bottr",
+      "ui"
+    ]
+  },
   "scripts": {
     "start": "node index.js",
     "test": "mocha index.test.js",
