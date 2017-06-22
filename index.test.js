@@ -303,7 +303,7 @@ describe('bot', function () {
             });
         }
         if (i === 2) {
-            it('should be able to answer the survey question ' + i, function (done) {
+            it('should be able to answer the survey question ' + (i+1), function (done) {
                 client1 = io.connect(socketURL, options);
                 client1.on('connect', function (data) {
                     var messages = 0;
@@ -376,7 +376,7 @@ describe('bot', function () {
                 });
             });
         } else {
-            it('should be able to answer the survey question ' + i, function (done) {
+            it('should be able to answer the survey question ' + (i+1), function (done) {
                 client1 = io.connect(socketURL, options);
                 client1.on('connect', function (data) {
                     var messages = 0;
