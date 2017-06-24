@@ -82,7 +82,7 @@ describe('bot', function () {
         client1.on('connect', function (data) {
             client1.on('message', function (message) {
                 if (messages === 1) {
-                    message.text.should.equal("Deine Nachricht macht an dieser Stelle noch keinen Sinn!");
+                    message.text.should.equal("Deine Nachricht macht an dieser Stelle keinen Sinn!");
                     client1.disconnect();
                     done();
                 }
