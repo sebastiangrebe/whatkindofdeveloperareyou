@@ -115,8 +115,8 @@ class SurveyBot {
         this.bot.hears([/\b[0-9]+\b/], function (message, session) {
             let context = session.getUserContext();
             // Catch all messages of users who have not started the survey yet
-            if (context.step === -1) {
-                session.send('Deine Nachricht macht an dieser Stelle noch keinen Sinn!');
+            if (context.step === -1 || context.step === self.fragebogenprogrammierung.length) {
+                session.send('Deine Nachricht macht an dieser Stelle keinen Sinn!');
             } else {
                 let wert = parseInt(message.text, 10);
                 // Check if the given answer fits the scales of the rating question given here
@@ -563,7 +563,7 @@ class SurveyBot {
         let commandString = 'Du kannst die Art wie deine Ergebnisse anpassen. Hier die sehr kurze Kommandoliste:\n';
         for (let prop in this.profileActions) {
             if (this.profileActions.hasOwnProperty(prop)) {
-                commandString += prop + ') ' + this.profileActions[prop].command + " " + this.profileActions[prop].parameter + '\n';
+                commandString += this.profileActions[prop].command + " " + this.profileActions[prop].parameter + '\n';
             }
         }
         commandString += 'Außerdem kannst du ganz einfach die allgemeinen Ergebnisse abrufen und siehst wie deine Kollegen abschneiden!\n Einfach "get global results" schicken.';
