@@ -77,10 +77,10 @@ Then you need just to enter these commands:
     git clone https://github.com/Sebi55/whatkindofdeveloperareyou.git
     cd whatkindofdeveloperareyou
     npm install
-    npm build
+    npm run build
     npm start
 
-When you have got problems running npm build you may need to install gulp globally.
+When you have got problems running npm run build you may need to install gulp globally.
 
 This is all. You should now see the bot running under [http://localhost:3000](http://localhost:3000)
 
