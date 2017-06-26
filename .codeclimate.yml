@@ -25,4 +25,5 @@ ratings:
   - "**.rb"
 exclude_paths:
 - "index.test.js"
+- "fragebogenprogrammierung.js"
 

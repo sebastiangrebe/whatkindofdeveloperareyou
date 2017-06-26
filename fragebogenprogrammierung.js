@@ -13,8 +13,8 @@ const skalen = {
     }
 };
 
-const backend_languages = ["NET", "PHP", "C#", "VB", "Ruby", "Perl", "NodeJS", "Actionscript", "Erlang", "Elixir", "Go", "SQL", "C++", "Rust", "Java", "Swift"];
-const frontend_languages = ["JavaScript", "CSS", "VBScript", "Silverlight", "HTML", "jQuery", "angular", "react", "ember"];
+const backend_languages = ["NET", "PHP", "C#", "VB", "Ruby", "Perl", "NodeJS", "Erlang", "Go", "C++", "Rust", "Java", "Swift", "maven"];
+const frontend_languages = ["JavaScript", "CSS", "VBScript", "Silverlight", "HTML", "jQuery", "angular", "react", "ember", "webpack", "gulp", "dart", "handlebars", "bootstrap"];
 const topics = [{
     text: "Skalierbarkeit",
     wert: -1
@@ -30,6 +30,9 @@ const topics = [{
 }, {
     text: "Cross-Platform Support",
     wert: 1
+},{
+    text: "Redundanzfreie Datenhaltung",
+    wert: -1
 }];
 const percs = [{
     text: "Musik hören",
@@ -124,7 +127,7 @@ const fragebogenprogrammierung = [{
             one: backend_languages,
             two: frontend_languages
         },
-        frage: 'Welche Programmiersprachen verwendest du am liebsten?'
+        frage: 'Welche Programmiersprachen bzw. Techniken verwendest du am liebsten?'
     },
     {
         id: "F7",
