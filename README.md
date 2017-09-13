@@ -8,6 +8,7 @@
 whatkindofdeveloperareyou is a simple chat bot build on an edited version of [Bottr](https://github.com/Bottr-js/Bottr)
 
 I ([Sebastian Grebe](https://github.com/Sebi55)) created whatkindofdevelopareyou because I wanted to take part in the chat bot Code Competition from [IT-Talents](https://www.it-talents.de/foerderung/code-competition/code-competition-06-2017).
+I made the second place with my chat bot! [https://www.it-talents.de/blog/it-talents/sebastian-sichert-sich-platz-2-bei-code-competition](https://www.it-talents.de/blog/it-talents/sebastian-sichert-sich-platz-2-bei-code-competition)
 
 ## Introduction
 
