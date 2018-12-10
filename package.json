@@ -20,7 +20,7 @@
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
     "fastclick": "^1.0.6",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "react": "^15.3.1",
     "react-addons-css-transition-group": "^15.3.1",
     "react-dom": "^15.3.1",
